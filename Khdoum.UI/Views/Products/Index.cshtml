@@ -4,10 +4,10 @@
     ViewBag.Title = "قائمة المنتجات";
 }
 <style>
-    .table
+    /*.table
     {
         width:2000px !important;
-    }
+    }*/
 </style>
 <h1>
     قائمة المنتجات
@@ -39,7 +39,7 @@
                 <th>
                     الحالة
                 </th>
-                <th></th>
+                <th style="width:105px"></th>
             </tr>
         </thead>
         <tbody>
@@ -49,7 +49,7 @@
 
 
 <!-- Modal -->
-<div class="modal fade" id="AddModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="AddModal" tabindex="-1"  aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <form id="AddForm" method="post">
             <div class="modal-content">
@@ -72,8 +72,13 @@
                                 <span asp-validation-for="Price" class="text-danger "></span>
                             </div>
                             <div class="form-group">
-                                <label asp-for="CategoryId" class="control-label">التصنيف</label>
-                                <select asp-for="CategoryId" class="form-control CategoryId">
+                                <label asp-for="QuantityDuration" class="control-label">معدل زيادة الكمية</label>
+                                <input asp-for="QuantityDuration" class="form-control QuantityDuration" />
+                                <span asp-validation-for="QuantityDuration" class="text-danger "></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">التصنيف</label>
+                                <select name="CategoryId" class="form-control CategoryId SelectTwo">
                                     @foreach (var item in Model.Categories)
                                     {
                                         <option value="@item.ID">@item.Name</option>
@@ -81,8 +86,8 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label asp-for="UnitId" class="control-label">الوحدة</label>
-                                <select asp-for="UnitId" class="form-control UnitId">
+                                <label class="control-label">الوحدة</label>
+                                <select name="UnitId" class="form-control UnitId SelectTwo">
                                     @foreach (var item in Model.Units)
                                     {
                                         <option value="@item.ID">@item.Name</option>
@@ -112,7 +117,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="EditModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="EditModal" tabindex="-1"  aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <form id="EditForm" method="post">
             <div class="modal-content">
@@ -137,8 +142,13 @@
                                 <span asp-validation-for="Price" class="text-danger "></span>
                             </div>
                             <div class="form-group">
-                                <label asp-for="CategoryId" class="control-label">التصنيف</label>
-                                <select asp-for="CategoryId" class="form-control CategoryId">
+                                <label asp-for="QuantityDuration" class="control-label">معدل زيادة الكمية</label>
+                                <input asp-for="QuantityDuration" class="form-control QuantityDuration" />
+                                <span asp-validation-for="QuantityDuration" class="text-danger "></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">التصنيف</label>
+                                <select name="CategoryId" class="form-control CategoryId SelectTwo">
                                     @foreach (var item in Model.Categories)
                                     {
                                         <option value="@item.ID">@item.Name</option>
@@ -146,8 +156,8 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label asp-for="UnitId" class="control-label">الوحدة</label>
-                                <select asp-for="UnitId" class="form-control UnitId">
+                                <label class="control-label">الوحدة</label>
+                                <select name="UnitId" class="form-control UnitId SelectTwo">
                                     @foreach (var item in Model.Units)
                                     {
                                         <option value="@item.ID">@item.Name</option>
@@ -177,7 +187,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="ViewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="ViewModal"  tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div>
             <div class="modal-content">
@@ -198,6 +208,11 @@
                                 <label asp-for="Price" class="control-label">السعر</label>
                                 <input readonly asp-for="Price" class="form-control Price" />
                                 <span asp-validation-for="Price" class="text-danger "></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="QuantityDuration" class="control-label">معدل زيادة الكمية</label>
+                                <input readonly asp-for="QuantityDuration" class="form-control QuantityDuration" />
+                                <span asp-validation-for="QuantityDuration" class="text-danger "></span>
                             </div>
                             <div class="form-group">
                                 <label asp-for="CategoryId" class="control-label">التصنيف</label>
@@ -273,9 +288,9 @@
                 Delete(ItemId);
             });
 
+           
 
-
-
+           
 
         });
 
@@ -361,7 +376,8 @@
                     $(`#${modal} .ID`).val(data.product.id);
                     $(`#${modal} .Name`).val(data.product.name);
                     $(`#${modal} .Price`).val(data.product.price);
-
+                    $(`#${modal} .QuantityDuration`).val(data.product.quantityDuration);
+                    console.log(data.product.quantityDuration);
                     $(`#${modal} .CategoryId`).val(data.product.categoryId);
                     $(`#${modal} .CategoryId`).change();
 

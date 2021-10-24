@@ -33,46 +33,54 @@ namespace Khdoum.Api.Controllers
 
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> Login([FromBody] LoginViewModel model)
+        public async Task<IActionResult> Login( LoginViewModel model)
         {
-            var user = await userManager.FindByNameAsync(model.Username);
-            if (user != null && await userManager.CheckPasswordAsync(user, model.Password))
+            try
             {
-                var userRoles = await userManager.GetRolesAsync(user);
-
-                var authClaims = new List<Claim>
+                var user = await userManager.FindByNameAsync(model.Username);
+                if (user != null && await userManager.CheckPasswordAsync(user, model.Password))
                 {
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                };
+                    var userRoles = await userManager.GetRolesAsync(user);
 
-                foreach (var userRole in userRoles)
-                {
-                    authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+                    var authClaims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, user.UserName),
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    };
+
+                    foreach (var userRole in userRoles)
+                    {
+                        authClaims.Add(new Claim(ClaimTypes.Role, userRole));
+                    }
+
+                    var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
+
+                    var token = new JwtSecurityToken(
+                        issuer: _configuration["JWT:ValidIssuer"],
+                        audience: _configuration["JWT:ValidAudience"],
+                        expires: DateTime.Now.AddYears(1),
+                        claims: authClaims,
+                        signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+                        );
+
+                    return Ok(new
+                    {
+                        token = new JwtSecurityTokenHandler().WriteToken(token),
+                        expiration = token.ValidTo
+                    });
                 }
-
-                var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
-
-                var token = new JwtSecurityToken(
-                    issuer: _configuration["JWT:ValidIssuer"],
-                    audience: _configuration["JWT:ValidAudience"],
-                    expires: DateTime.Now.AddHours(3),
-                    claims: authClaims,
-                    signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                    );
-
-                return Ok(new
-                {
-                    token = new JwtSecurityTokenHandler().WriteToken(token),
-                    expiration = token.ValidTo
-                });
+                return Unauthorized();
             }
-            return Unauthorized();
+            catch(Exception ex)
+            {
+
+            }
+            return BadRequest();
         }
 
         [HttpPost]
         [Route("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterViewModel model)
+        public async Task<IActionResult> Register(RegisterViewModel model)
         {
             var userExists = await userManager.FindByNameAsync(model.Username);
             if (userExists != null)
@@ -80,7 +88,7 @@ namespace Khdoum.Api.Controllers
 
             ApplicationUser user = new ApplicationUser()
             {
-                Email = model.Email,
+                Email = "ahmed@gmail.com",
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = model.Username
             };
@@ -101,7 +109,7 @@ namespace Khdoum.Api.Controllers
 
             ApplicationUser user = new ApplicationUser()
             {
-                Email = model.Email,
+                Email = "ahmed@gmail.com",
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = model.Username
             };

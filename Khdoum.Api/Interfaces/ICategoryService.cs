@@ -1,4 +1,5 @@
 ﻿using Khdoum.Api.Models;
+using Khdoum.Api.Models.ViewModels.AppViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,8 @@ namespace Khdoum.Api.Interfaces
     {
         Task<IEnumerable<Category>> GetCategories();
         Task<IEnumerable<Category>> GetLastLevelCategories();
+        Task<IEnumerable<Category>> GetChildCategories(long ParentId);
+        Task<IEnumerable<ItemViewModel>> GetFrom1To2LevelCategories();
         Task<Category> GetCategory(long CategoryId);
         Task<Category> AddCategory(Category Category);
         Task<Category> UpdateCategory(Category Category);

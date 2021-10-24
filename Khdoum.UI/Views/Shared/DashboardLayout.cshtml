@@ -44,6 +44,10 @@
         .select2-search--dropdown .select2-search__field {
             width: 98%;
         }
+
+        /*.select2-container {
+            z-index: 100000;
+        }*/
     </style>
 </head>
 <body style="font-family:'Cairo'">
@@ -170,7 +174,8 @@
                     width: 'resolve'
                 });
             });
-        });
+        })
+      
 
         function BuildAjaxDataTable(table, Url, Columns, data, DataSrc, ServerSide = true, rowGroup = '') {
             $(table).find("tbody").remove();
@@ -210,7 +215,7 @@
             });
 
             $(".dt-buttons").hide();
-            $(".dataTables_filter").hide();
+            //$(".dataTables_filter").hide();
 
             //var group = $(".dtrg-level-0");
             //if (group.text() == "No group") {
@@ -219,9 +224,9 @@
         }
 
         function EmptyFeilds() {
-            $('input').each(function (index, item) {
-                $(item).val('');
-            })
+            //$('input').each(function (index, item) {
+            //    $(item).val('');
+            //})
         }
 
 

@@ -47,8 +47,8 @@
                                 <span asp-validation-for="Name" class="text-danger Name"></span>
                             </div>
                             <div class="form-group">
-                                <label asp-for="ParentId" class="control-label">تحت فئة</label>
-                                <select  asp-for="ParentId"  class="form-control ParentId">
+                                <label  class="control-label">تحت فئة</label>
+                                <select   name="ParentId"  class="form-control ParentId AddModalParentId">
                                     <option value="0">فئة رئيسية</option>
                                     @foreach(var item in Model.Categories)
                                     {
@@ -99,8 +99,8 @@
                                 <span asp-validation-for="Name" class="text-danger "></span>
                             </div>
                             <div class="form-group">
-                                <label  class="control-label">تحت فئة</label>
-                                <select  class="form-control ParentId">
+                                <label   class="control-label">تحت فئة</label>
+                                <select  name="ParentId"  class="form-control ParentId EditModalParentId">
                                     <option value="0">فئة رئيسية</option>
                                     @foreach (var item in Model.Categories)
                                     {
@@ -184,7 +184,6 @@
     <script>
         $(function () {
 
-            $.fn.modal.Constructor.prototype._enforceFocus = function () { };
 
             FillTable();
 
@@ -214,6 +213,17 @@
                 Delete(ItemId);
             });
 
+
+            
+
+            
+
+
+         
+
+           
+
+          
         
 
            
@@ -344,12 +354,12 @@
             if (fileUpload != null && fileUpload != undefined) {
                 var file = fileUpload.files[0];
                 fileData.append('Image', file);
-                console.log(file);
             }
 
 
             $.each(SerializedData, function (index, item) {
                 fileData.append(item.name, item.value);
+                console.log(`${item.name}: ${item.value}`);
             });
 
 

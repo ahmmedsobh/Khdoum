@@ -11,10 +11,6 @@ namespace Khdoum.Api.Models.ViewModels
         [Required(ErrorMessage = "اسم المستخدم مطلوب")]
         public string Username { get; set; }
 
-        [EmailAddress]
-        [Required(ErrorMessage = "البريد الالكترونى مطلوب")]
-        public string Email { get; set; }
-
         [Required(ErrorMessage = "كلمة المرور مطلوبة")]
         public string Password { get; set; }
     }

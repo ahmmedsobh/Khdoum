@@ -52,6 +52,35 @@ namespace Khdoum.Api.Controllers
                     "Error retrieving data from the database");
             }
         }
+
+        [HttpGet("GetFrom1To2LevelCategories")]
+        public async Task<ActionResult> GetFrom1To2LevelCategories()
+        {
+            try
+            {
+                return Ok(await Categories.GetFrom1To2LevelCategories());
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error retrieving data from the database");
+            }
+        }
+
+        [HttpGet("{GetChildCategories}/{ParentId:long}")]
+        public async Task<ActionResult> GetChildCategories(long ParentId)
+        {
+            try
+            {
+                return Ok(await Categories.GetChildCategories(ParentId));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error retrieving data from the database");
+            }
+        }
+
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Category>> GetCategory(int id)
         {

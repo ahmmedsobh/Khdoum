@@ -12,6 +12,7 @@ namespace Khdoum.Api.Models
         public string ImgUrl { get; set; }
         public decimal Price { get; set; }
         public bool IsActive { get; set; }
+        public decimal QuantityDuration { get; set; }
 
         public long CategoryId { get; set; }
         public Category Category { get; set; }

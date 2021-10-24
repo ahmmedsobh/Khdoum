@@ -1,4 +1,5 @@
 ﻿using Khdoum.Api.Data;
+using Khdoum.Api.Helpers;
 using Khdoum.Api.Interfaces;
 using Khdoum.Api.Models;
 using Khdoum.Api.Models.ViewModels;
@@ -66,6 +67,29 @@ namespace Khdoum.Api.Servicies
             return await products;
         }
 
+        public async Task<IEnumerable<ProductViewModel>> GetProductsByCategoryId(long CategoryId)
+        {
+            var products = (from p in context.Products
+                            from c in context.Categories
+                            from u in context.Units
+                            where p.CategoryId == c.ID && p.UnitId == u.ID && p.CategoryId == CategoryId
+                            select new ProductViewModel
+                            {
+                                ID = p.ID,
+                                Name = p.Name,
+                                Price = p.Price,
+                                ImgUrl = p.ImgUrl == "false"?$"{Constants.BaseAddress}Uploads/default.png": $"{Constants.BaseAddress}Uploads/Products/{p.ImgUrl}",
+                                IsActive = p.IsActive,
+                                CategoryId = p.CategoryId,
+                                UnitId = p.UnitId,
+                                CategoryName = c.Name,
+                                UnitName = u.Name,
+                                QuantityDuration = p.QuantityDuration
+                            }).ToListAsync();
+
+            return await products;
+        }
+
         public async Task<ProductViewModel> GetViewProduct(long ProductId)
         {
             var product = (from p in context.Products
@@ -83,6 +107,7 @@ namespace Khdoum.Api.Servicies
                                UnitId = p.UnitId,
                                CategoryName = c.Name,
                                UnitName = u.Name,
+                               QuantityDuration = p.QuantityDuration
                            }).FirstOrDefaultAsync();
 
             return await product;

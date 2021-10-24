@@ -9,7 +9,8 @@ using System.Threading.Tasks;
 namespace Khdoum.Api.Data
 {
     //IdentityDbContext<ApplicationUser>
-    public class ApplicationDbContext: DbContext
+   // DbContext
+    public class ApplicationDbContext: IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {

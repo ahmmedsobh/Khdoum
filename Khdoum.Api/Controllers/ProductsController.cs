@@ -22,6 +22,7 @@ namespace Khdoum.Api.Controllers
         {
             this.Products = Products;
             this.uploadImages = uploadImages;
+            uploadImages.Folder = "Products";
         }
 
         [HttpGet]
@@ -30,6 +31,20 @@ namespace Khdoum.Api.Controllers
             try
             {
                 return Ok(await Products.GetProducts());
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error retrieving data from the database");
+            }
+        }
+
+        [HttpGet("GetProductsByCategoryId/{CategoryId:long}")]
+        public async Task<ActionResult> GetProductsByCategoryId(long CategoryId)
+        {
+            try
+            {
+                return Ok(await Products.GetProductsByCategoryId(CategoryId));
             }
             catch (Exception)
             {
@@ -82,13 +97,19 @@ namespace Khdoum.Api.Controllers
                 if (product == null)
                     return BadRequest();
 
+                if(product.QuantityDuration == 0)
+                {
+                    product.QuantityDuration = 1;
+                }
+
                 var ProductToAdd = new Product()
                 {
                     Name = product.Name,
                     Price = product.Price,
                     IsActive = product.IsActive,
                     CategoryId = product.CategoryId,
-                    UnitId = product.UnitId
+                    UnitId = product.UnitId,
+                    QuantityDuration = product.QuantityDuration
                 };
 
                 ProductToAdd.ImgUrl = uploadImages.AddImage(product.Image);
@@ -117,11 +138,17 @@ namespace Khdoum.Api.Controllers
                 if (productToUpdate == null)
                     return NotFound($"Product with Id = {product.ID} not found");
 
+
                 productToUpdate.Name = product.Name;
                 productToUpdate.Price = product.Price;
                 productToUpdate.IsActive = product.IsActive;
                 productToUpdate.CategoryId = product.CategoryId;
                 productToUpdate.UnitId = product.UnitId;
+                if(product.QuantityDuration > 0)
+                {
+                    productToUpdate.QuantityDuration = product.QuantityDuration;
+                }
+
                 productToUpdate.ImgUrl = uploadImages.UpdateImage(productToUpdate.ImgUrl, product.Image);
 
                 return await Products.UpdateProduct(productToUpdate);

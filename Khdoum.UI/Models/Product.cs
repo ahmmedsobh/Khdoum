@@ -18,6 +18,8 @@ namespace Khdoum.UI.Models
         public string CategoryName { get; set; }
         public string UnitName { get; set; }
         public IFormFile Image { get; set; }
+        public decimal QuantityDuration { get; set; }
+
         public List<Category> Categories { get; set; } = new List<Category>();
         public List<Unit> Units { get; set; } = new List<Unit>();
     }

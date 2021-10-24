@@ -106,6 +106,7 @@ namespace Khdoum.UI.Controllers
                 content.Add(new StringContent(Product.CategoryId.ToString()), "CategoryId");
                 content.Add(new StringContent(Product.UnitId.ToString()), "UnitId");
                 content.Add(new StringContent(Product.IsActive.ToString()), "IsActive");
+                content.Add(new StringContent(Product.QuantityDuration.ToString()), "QuantityDuration");
 
                 if (Product.Image != null)
                 {
@@ -149,6 +150,7 @@ namespace Khdoum.UI.Controllers
                 content.Add(new StringContent(Product.CategoryId.ToString()), "CategoryId");
                 content.Add(new StringContent(Product.UnitId.ToString()), "UnitId");
                 content.Add(new StringContent(Product.IsActive.ToString()), "IsActive");
+                content.Add(new StringContent(Product.QuantityDuration.ToString()), "QuantityDuration");
 
                 if (Product.Image != null)
                 {

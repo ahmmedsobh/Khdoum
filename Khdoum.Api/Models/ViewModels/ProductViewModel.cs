@@ -18,6 +18,8 @@ namespace Khdoum.Api.Models.ViewModels
         public string CategoryName { get; set; }
         public string UnitName { get; set; }
         public IFormFile Image { get; set; }
+        public decimal QuantityDuration { get; set; }
+
 
         public List<MarketProducts> MarketProducts { get; set; }
         public List<OrderDetails> OrderDetails { get; set; }

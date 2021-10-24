@@ -1,6 +1,8 @@
 ﻿using Khdoum.Api.Data;
+using Khdoum.Api.Helpers;
 using Khdoum.Api.Interfaces;
 using Khdoum.Api.Models;
+using Khdoum.Api.Models.ViewModels.AppViewModels;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -56,6 +58,44 @@ namespace Khdoum.Api.Servicies
         public async Task<Category> GetCategory(long CategoryId)
         {
             return await context.Categories.FirstOrDefaultAsync(c => c.ID == CategoryId);
+        }
+
+        public async Task<IEnumerable<Category>> GetChildCategories(long ParentId)
+        {
+            return await context.Categories.Where(c => c.ParentId == ParentId).ToListAsync();
+        }
+
+        public async Task<IEnumerable<ItemViewModel>> GetFrom1To2LevelCategories()
+        {
+            List<ItemViewModel> Items = new List<ItemViewModel>();
+
+            var ParentCategories = await (from c in context.Categories
+                        where c.ParentId == 0
+                        select c).ToListAsync();
+
+            foreach(var item in ParentCategories)
+            {
+                var ChildCategories = await(from c in context.Categories
+                                      where c.ParentId == item.ID
+                                      select new ItemViewModel
+                                      {
+                                          Id = c.ID.ToString(),
+                                          Text = c.Name,
+                                          Icon = c.ImgUrl == "false" ? $"{Constants.BaseAddress}Uploads/default.png" : $"{Constants.BaseAddress}Uploads/Categories/{c.ImgUrl}",
+                                          CategoryIcon = item.ImgUrl == "false"? $"{Constants.BaseAddress}Uploads/default.png" : $"{Constants.BaseAddress}Uploads/Categories/{item.ImgUrl}",
+                                          CategoryId = Convert.ToInt32(c.ParentId),
+                                          CategoryName = item.Name,
+                                          LevelStatus = c.LevelStatus
+                                      }).ToListAsync();
+
+                if(ChildCategories != null)
+                {
+                     Items.AddRange(ChildCategories);
+                }
+
+            }
+
+            return Items;
         }
 
         public async Task<IEnumerable<Category>> GetLastLevelCategories()
