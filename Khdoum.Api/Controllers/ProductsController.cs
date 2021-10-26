@@ -90,7 +90,7 @@ namespace Khdoum.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Product>> CreateProduct([FromForm]ProductViewModel product)
+        public async Task<ActionResult<ProductViewModel>> CreateProduct([FromForm]ProductViewModel product)
         {
             try
             {

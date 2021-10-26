@@ -71,6 +71,7 @@ namespace Khdoum.Api
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IUnitService, UnitService>();
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IMarketService, MarketService>();
             services.AddScoped<UploadImages>();
         }
 

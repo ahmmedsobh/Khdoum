@@ -17,7 +17,6 @@ namespace Khdoum.Api.Controllers
     {
         private readonly ICategoryService Categories;
         private readonly UploadImages uploadImages;
-
         public CategoriesController(ICategoryService Categories, UploadImages uploadImages)
         {
             this.Categories = Categories;
