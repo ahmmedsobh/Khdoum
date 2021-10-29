@@ -19,6 +19,8 @@ namespace Khdoum.UI.Models
         public string UnitName { get; set; }
         public IFormFile Image { get; set; }
         public decimal QuantityDuration { get; set; }
+        public string MarketId { get; set; }
+        public string MarketName { get; set; }
 
         public List<Category> Categories { get; set; } = new List<Category>();
         public List<Unit> Units { get; set; } = new List<Unit>();

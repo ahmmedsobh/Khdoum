@@ -14,5 +14,7 @@ namespace Khdoum.Api.Interfaces
         Task<MarketViewModel> AddMarket(MarketViewModel Market);
         Task<MarketViewModel> UpdateMarket(MarketViewModel Market);
         Task<MarketViewModel> DeleteMarket(string MarketId);
+        Task<IEnumerable<MarketProductsViewModel>> GetMarketProducts(string MarketId);
+        Task<bool> AddMarketProducts(List<MarketProductsViewModel> Products);
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Khdoum.UI.Helpers;
 using Khdoum.UI.Models;
@@ -98,8 +99,13 @@ namespace Khdoum.UI.Controllers
                 Status = false
             });
         }
+        [HttpPost]
         public async Task<IActionResult> Update(Market Market)
         {
+            Market.Password = "aaAA159753##";
+            Market.ConfirmPassword = "aaAA159753##";
+            Market.Phone = "01022254522";
+
             if (ModelState.IsValid)
             {
                 var Client = new HttpClient();
@@ -152,6 +158,55 @@ namespace Khdoum.UI.Controllers
                 {
                     Status = true
                 });
+            }
+
+            return Json(new
+            {
+                Status = false
+            });
+        }
+
+        public async Task<IActionResult> GetMarketProductsList(string MarketId)
+        {
+            IEnumerable<MarketProducts> MarketProducts = new List<MarketProducts>();
+            var Client = new HttpClient();
+            var json = "";
+            HttpResponseMessage response = await Client.GetAsync($"{Constant.BaseAddress}api/market/GetMarketProducts/{MarketId}");
+            if (response.IsSuccessStatusCode)
+            {
+                json = await response.Content.ReadAsStringAsync();
+                MarketProducts = JsonConvert.DeserializeObject<IEnumerable<MarketProducts>>(json);
+            }
+
+            return Json(new
+            {
+                MarketProducts = MarketProducts
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddMarketProducts(List<MarketProducts> products)
+        {
+            if (ModelState.IsValid)
+            {
+                var Client = new HttpClient();
+
+                MarketProductsRequest market = new MarketProductsRequest();
+                market.products = products.Where(p => p.IsEnabled).ToList();
+
+                var json = JsonConvert.SerializeObject(market);
+                HttpContent content = new StringContent(json);
+                content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+
+                var response = await Client.PostAsync(Constant.BaseAddress + "api/Market/AddMarketProducts", content);
+                if (response.IsSuccessStatusCode)
+                {
+                    return Json(new
+                    {
+                        Status = true
+                    });
+                }
             }
 
             return Json(new

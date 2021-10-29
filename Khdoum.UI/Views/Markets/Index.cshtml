@@ -22,7 +22,7 @@
             <th>
                 رقم الهاتف
             </th>
-            <th></th>
+            <th style="width:200px"></th>
         </tr>
     </thead>
     <tbody>
@@ -45,27 +45,27 @@
                             <div class="form-group">
                                 <label asp-for="Name" class="control-label">الاسم</label>
                                 <input asp-for="Name" class="form-control Name" />
-                                <span asp-validation-for="Name" class="text-danger "></span>
+                                <span asp-validation-for="Name" class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label asp-for="Email" class="control-label">البريد الالكترونى</label>
                                 <input asp-for="Email" class="form-control Email" />
-                                <span asp-validation-for="Email" class="text-danger "></span>
+                                <span asp-validation-for="Email" class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label asp-for="Phone" class="control-label">الهاتف</label>
                                 <input asp-for="Phone" class="form-control Phone" />
-                                <span asp-validation-for="Phone" class="text-danger "></span>
+                                <span asp-validation-for="Phone" class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label asp-for="Password" class="control-label">كلمة المرور</label>
                                 <input asp-for="Password" class="form-control Password" />
-                                <span asp-validation-for="Password" class="text-danger "></span>
+                                <span asp-validation-for="Password" class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label asp-for="ConfirmPassword" class="control-label">تأكيد كلمة المرور</label>
                                 <input asp-for="ConfirmPassword" class="form-control ConfirmPassword" />
-                                <span asp-validation-for="ConfirmPassword" class="text-danger "></span>
+                                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                             </div>
 
                             <div class="form-group">
@@ -99,6 +99,8 @@
                     <div class="row">
                         <div class="col-md-12">
                             <input name="ID" class="ID" type="hidden" />
+                            <input name="ConfirmPassword" value="AAaa1345855555##" class="ConfirmPassword" type="hidden" />
+                            <input name="Password" value="AAaa1345855555##" class="Password" type="hidden" />
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <div class="form-group">
                                 <label asp-for="Name" class="control-label">الاسم</label>
@@ -142,22 +144,22 @@
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <div class="form-group">
                                 <label asp-for="Name" class="control-label">الاسم</label>
-                                <input asp-for="Name" class="form-control Name" />
+                                <input readonly asp-for="Name" class="form-control Name" />
                                 <span asp-validation-for="Name" class="text-danger "></span>
                             </div>
                             <div class="form-group">
                                 <label asp-for="Email" class="control-label">البريد الالكترونى</label>
-                                <input asp-for="Email" class="form-control Email" />
+                                <input readonly asp-for="Email" class="form-control Email" />
                                 <span asp-validation-for="Email" class="text-danger "></span>
                             </div>
                             <div class="form-group">
                                 <label asp-for="Phone" class="control-label">الهاتف</label>
-                                <input asp-for="Phone" class="form-control Phone" />
+                                <input readonly asp-for="Phone" class="form-control Phone" />
                                 <span asp-validation-for="Phone" class="text-danger "></span>
                             </div>
                             <div class="form-group">
                                 <label asp-for="Image" class="control-label">الصورة</label>
-                                <input asp-for="Image" id="Image" type="file" class="form-control" />
+                                <input readonly asp-for="Image" id="Image" type="file" class="form-control" />
                                 <span asp-validation-for="Image" class="text-danger"></span>
                             </div>
                         </div>
@@ -171,6 +173,56 @@
 
     </div>
 </div>
+
+
+<div class="modal fade" id="AddMarketProductsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <form id="AddMarketProductsForm" method="post">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">تحديد منتجات المتجر</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="table table-striped table-bordered text-center table-responsive" id="MarketProductsTable">
+                                <thead>
+                                    <tr>
+                                        <th>
+
+                                        </th>
+                                        <th>
+                                            الاسم
+                                        </th>
+                                        <th>
+                                            السعر
+                                        </th>
+                                        <th>
+                                            التصنيف
+                                        </th>
+                                        <th>
+                                            الوحدة
+                                        </th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">اغلاق</button>
+                    <button type="submit" id="AddBtn" class="btn btn-primary">حفظ</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+
 @section Scripts
 {
     <script>
@@ -181,12 +233,34 @@
 
             $("#AddForm").submit(function (e) {
                 e.preventDefault();
-                Insert();
+                if (Validation()) {
+                    Insert();
+                }
             });
+
 
             $("#EditForm").submit(function (e) {
                 e.preventDefault();
-                Update();
+                if (Validation()) {
+                    Update();
+                }
+
+            });
+
+            $("#AddMarketProductsForm").submit(function (e) {
+                e.preventDefault();
+                var counter = 0;
+
+                $("#AddMarketProductsForm .IsEnabled:checked").each(function (index, item) {
+                    if ($(item).closest('tr').find('.Price').val() == "") {
+                        $(item).closest('tr').find('.ErrorMessage').text("السعر مطلوب");
+                        counter = counter + 1;
+                    }
+                });
+
+                if (counter == 0) {
+                    AddMarketProducts();
+                }
             });
 
             $(document).on("click", ".EditBtn", function () {
@@ -205,16 +279,11 @@
                 Delete(ItemId);
             });
 
-
-
-
-
-
-
-
-
-
-
+            $(document).on("click", ".AddProductsBtn", function () {
+                var ItemId = $(this).attr("ItemId");
+                FillProductsTable(ItemId);
+                $('#AddMarketProductsModal').modal('show');
+            });
 
 
 
@@ -300,7 +369,7 @@
 
             success: function (data) {
 
-                if (data.market.id > 0) {
+                if (data.market.id != "") {
                     $(`#${modal} .ID`).val(data.market.id);
                     $(`#${modal} .Name`).val(data.market.name);
                     $(`#${modal} .Phone`).val(data.market.phone);
@@ -406,7 +475,8 @@
                     data: null, render: function (data, type, row) {
                         return `<a class="btn btn-warning tbl-btn EditBtn" ItemId="${data.id}" ><i class="fas fa-pen"></i></a>
                                 <a class="btn btn-info tbl-btn DetailsBtn" ItemId="${data.id}" ><i class="fas fa-info"></i></a>
-                                <a class="btn btn-danger tbl-btn DeleteBtn" ItemId="${data.id}" ><i class="fas fa-trash"></i></a>`;
+                                <a class="btn btn-danger tbl-btn DeleteBtn" ItemId="${data.id}" ><i class="fas fa-trash"></i></a>
+                                <a class="btn btn-primary tbl-btn AddProductsBtn" ItemId="${data.id}" ><i class="fas fa-plus"></i></a>`;
                     }
                 },
             ];
@@ -467,6 +537,122 @@
                     //Swal.fire('Changes are not saved', '', 'info')
                 }
             })
+        }
+
+        function Validation() {
+
+            var length = 0;
+            length = $(".field-validation-error").length;
+
+            if (length == 0) {
+                return true;
+            }
+
+            return false;
+
+        }
+
+        function FillProductsTable(MarketId) {
+            var Url = "@Url.Action("GetMarketProductsList", "Markets")";
+            var Columns = [
+                {
+                    data: null, render: function (data, type, row) {
+
+                        var img = '';
+                        if (data.imgUrl == "false") {
+                            img = `<img src="@Model.BaseAddres/Uploads/default.png" class="tbl-img"/>`
+                        }
+                        else {
+                            img = `<img src="@Model.BaseAddres/Uploads/Markets/${data.imgUrl}" class="tbl-img"/>`
+                        }
+
+                        return img;
+                    }
+                },
+                { data: 'name', 'name': 'name' },
+                {
+                    data: null, render: function (data, type, row) {
+
+                        return ` <div class="form-group">
+                                    <input name="products[${data.rowNumber}].Price" value="${data.price}"  class="form-control Price" />
+                                    <input type="hidden" name="products[${data.rowNumber}].MarketId"  value="${data.marketId}" class="form-control" />
+                                    <input type="hidden" name="products[${data.rowNumber}].ID"  value="${data.id}" class="form-control" />
+                                    <span class="text-danger ErrorMessage"></span>
+                                 </div>`;
+                    }
+                },
+                { data: 'categoryName', 'name': 'categoryName' },
+                { data: 'unitName', 'name': 'unitName' },
+                {
+                    data: null, render: function (data, type, row) {
+
+                        var SelectBtn = ``;
+
+                        if (data.isEnabled) {
+                            SelectBtn = `<input class="IsEnabled" type='checkbox' checked value="true" name="products[${data.rowNumber}].IsEnabled" />`
+                        }
+                        else {
+                            SelectBtn = `<input class="IsEnabled" type='checkbox'  value="true" name="products[${data.rowNumber}].IsEnabled"/>`
+                        }
+
+
+
+                        return SelectBtn;
+                    }
+                },
+            ];
+
+            var data = {
+                MarketId: MarketId,
+            };
+
+
+            BuildAjaxDataTable($("#MarketProductsTable"), Url, Columns, data,"marketProducts",false);
+        }
+
+        function AddMarketProducts() {
+            var formData = new FormData();
+
+            var SerializedData = $("#AddMarketProductsForm").serializeArray();
+
+            $.each(SerializedData, function (index, item) {
+                formData.append(item.name, item.value);
+            });
+
+            $.ajax({
+                type: 'POST',
+                url: `@Url.Action("AddMarketProducts", "Markets")`,
+                processData: false,
+                contentType: false,
+                data: formData ,
+                //beforeSend: function () {
+
+                //},
+
+            success: function (data) {
+
+                if (data.status == true) {
+                    $('#AddMarketProductsModal').modal('hide');
+                }
+
+                //if (data.Message.Title != null && data.Message.Title != "" ) {
+                //    var title = data.Message.Title;
+                //    var body = data.Message.Description;
+                //    var type = data.Message.Type;
+                //    ShowMessage(title, body, type);
+                //}
+                },
+                error: function (ex) {
+
+                    console.log(ex);
+                    console.log(response);
+
+                    var r = jQuery.parseJSON(response.responseText);
+                    alert("Message: " + r.Message);
+                    alert("StackTrace: " + r.StackTrace);
+                    alert("ExceptionType: " + r.ExceptionType);
+                }
+            });
         }
 
     </script>

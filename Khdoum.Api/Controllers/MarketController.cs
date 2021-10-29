@@ -35,7 +35,7 @@ namespace Khdoum.Api.Controllers
                     "Error retrieving data from the database");
             }
         }
-        [HttpGet("{id:alpha}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<MarketViewModel>> GetMarket(string id)
         {
             try
@@ -75,7 +75,7 @@ namespace Khdoum.Api.Controllers
         }
         //[HttpPut("{id:int}")]
         [HttpPut]
-        public async Task<ActionResult<MarketViewModel>> UpdateMarket([FromForm] MarketViewModel market)
+        public async Task<ActionResult> UpdateMarket([FromForm] MarketViewModel market)
         {
             try
             {
@@ -89,7 +89,9 @@ namespace Khdoum.Api.Controllers
 
                 market.ImgUrl = uploadImages.UpdateImage(marketToUpdate.ImgUrl, market.Image);
 
-                return await MarketService.UpdateMarket(market);
+                var r =  await MarketService.UpdateMarket(market);
+
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -97,7 +99,7 @@ namespace Khdoum.Api.Controllers
                     "Error updating data");
             }
         }
-        [HttpDelete("{id:alpha}")]
+        [HttpDelete("{id}")]
         public async Task<ActionResult<MarketViewModel>> DeleteMarket(string id)
         {
             try
@@ -115,6 +117,34 @@ namespace Khdoum.Api.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     "Error deleting data");
+            }
+        }
+
+        [HttpGet("GetMarketProducts/{id}")]
+        public async Task<ActionResult> GetMarketProducts(string id)
+        {
+            try
+            {
+                return Ok(await MarketService.GetMarketProducts(id));
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error retrieving data from the database");
+            }
+        }
+
+        [HttpPost("AddMarketProducts")]
+        public async Task<ActionResult> AddMarketProducts(MarketProductsRequest model)
+        {
+            try
+            {
+                return Ok(await MarketService.AddMarketProducts(model.products));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error retrieving data from the database");
             }
         }
     }

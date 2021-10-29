@@ -70,21 +70,26 @@ namespace Khdoum.Api.Servicies
         public async Task<IEnumerable<ProductViewModel>> GetProductsByCategoryId(long CategoryId)
         {
             var products = (from p in context.Products
+                            from m in context.Users
+                            from mp in context.MarketProducts
                             from c in context.Categories
                             from u in context.Units
                             where p.CategoryId == c.ID && p.UnitId == u.ID && p.CategoryId == CategoryId
+                            && mp.ProductId == p.ID && mp.UserId == m.Id
                             select new ProductViewModel
                             {
-                                ID = p.ID,
+                                ID = mp.ID,
                                 Name = p.Name,
-                                Price = p.Price,
+                                Price = mp.Price,
                                 ImgUrl = p.ImgUrl == "false"?$"{Constants.BaseAddress}Uploads/default.png": $"{Constants.BaseAddress}Uploads/Products/{p.ImgUrl}",
                                 IsActive = p.IsActive,
                                 CategoryId = p.CategoryId,
                                 UnitId = p.UnitId,
                                 CategoryName = c.Name,
                                 UnitName = u.Name,
-                                QuantityDuration = p.QuantityDuration
+                                QuantityDuration = p.QuantityDuration,
+                                MarketId = mp.UserId,
+                                MarketName = m.Name
                             }).ToListAsync();
 
             return await products;
