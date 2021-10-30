@@ -189,6 +189,22 @@ namespace Khdoum.UI.Controllers
         {
             if (ModelState.IsValid)
             {
+                if(products == null)
+                {
+                    return Json(new
+                    {
+                        Status = false
+                    });
+                }
+
+                if(products.Count == 0)
+                {
+                    return Json(new
+                    {
+                        Status = false
+                    });
+                }
+
                 var Client = new HttpClient();
 
                 MarketProductsRequest market = new MarketProductsRequest();

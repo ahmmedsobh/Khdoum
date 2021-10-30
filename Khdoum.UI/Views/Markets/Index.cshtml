@@ -226,6 +226,10 @@
 @section Scripts
 {
     <script>
+
+
+        var Products = [];
+
         $(function () {
 
 
@@ -249,18 +253,7 @@
 
             $("#AddMarketProductsForm").submit(function (e) {
                 e.preventDefault();
-                var counter = 0;
-
-                $("#AddMarketProductsForm .IsEnabled:checked").each(function (index, item) {
-                    if ($(item).closest('tr').find('.Price').val() == "") {
-                        $(item).closest('tr').find('.ErrorMessage').text("السعر مطلوب");
-                        counter = counter + 1;
-                    }
-                });
-
-                if (counter == 0) {
-                    AddMarketProducts();
-                }
+                AddMarketProducts();
             });
 
             $(document).on("click", ".EditBtn", function () {
@@ -280,13 +273,73 @@
             });
 
             $(document).on("click", ".AddProductsBtn", function () {
+                Products = [];
                 var ItemId = $(this).attr("ItemId");
                 FillProductsTable(ItemId);
                 $('#AddMarketProductsModal').modal('show');
             });
 
+            $(document).on("click", ".IsEnabled", function () {
+                if ($(this).is(':checked')) {
+                    var price = $(this).closest("tr").find('.Price').val();
+                    if (price == 0) {
+                        $(this).closest('tr').find('.ErrorMessage').text("السعر مطلوب");
+                        $(this).closest('tr').find('.IsEnabled').prop('checked',false)
+                        return;
+                    }
+                    else {
+
+                        $(this).closest('tr').find('.ErrorMessage').text("");
+
+                        var index = Products.length;
+                        var ID = $(this).closest("tr").find('.ID').val();
+                        var MarketId = $(this).closest("tr").find('.MarketId').val();
+                        var IsEnabled = $(this).closest("tr").find('.IsEnabled').val();
+
+                        var obj = {};
+                        obj[`products[${index}].ID`] = ID;
+                        obj[`products[${index}].MarketId`] = MarketId;
+                        obj[`products[${index}].IsEnabled`] = IsEnabled;
+                        obj[`products[${index}].Price`] = price;
+                        obj[`ID`] = ID;
 
 
+                        Products.push(obj);
+
+                    }
+                }
+                else {
+                    var ID = $(this).closest("tr").find('.ID').val();
+                    var i = Products.findIndex(x => x.ID === ID);
+                    Products.splice(i, 1);
+                  
+
+                    var ps = [];
+                    ps.push(...Products);
+
+                    Products = [];
+                    $.each(ps,function (index,item) {
+                        var obj = {};
+
+                        var IDKey = Object.keys(item)[0];
+                        var MarketIdKey = Object.keys(item)[1];
+                        var IsEnabledKey = Object.keys(item)[2];
+                        var PriceKey = Object.keys(item)[3];
+                        var GetIDKey = Object.keys(item)[4];
+
+                        obj[`products[${index}].ID`] = item[IDKey];
+                        obj[`products[${index}].MarketId`] = item[MarketIdKey];
+                        obj[`products[${index}].IsEnabled`] = item[IsEnabledKey];
+                        obj[`products[${index}].Price`] = item[PriceKey];
+                        obj[`ID`] = item[GetIDKey];
+                        Products.push(obj);
+                    });
+
+                    
+                }
+            });
+
+            
 
 
         });
@@ -574,9 +627,9 @@
                     data: null, render: function (data, type, row) {
 
                         return ` <div class="form-group">
-                                    <input name="products[${data.rowNumber}].Price" value="${data.price}"  class="form-control Price" />
-                                    <input type="hidden" name="products[${data.rowNumber}].MarketId"  value="${data.marketId}" class="form-control" />
-                                    <input type="hidden" name="products[${data.rowNumber}].ID"  value="${data.id}" class="form-control" />
+                                    <input  value="${data.price}"  class="form-control Price" />
+                                    <input type="hidden"   value="${data.marketId}" class="form-control MarketId" />
+                                    <input type="hidden"   value="${data.id}" class="form-control ID" />
                                     <span class="text-danger ErrorMessage"></span>
                                  </div>`;
                     }
@@ -589,10 +642,32 @@
                         var SelectBtn = ``;
 
                         if (data.isEnabled) {
-                            SelectBtn = `<input class="IsEnabled" type='checkbox' checked value="true" name="products[${data.rowNumber}].IsEnabled" />`
+
+                            // fill products to bind with add market products action
+
+                            var ID = `${data.id}`;
+                            var i = Products.findIndex(x => x.ID === ID);
+                            if (i == -1) {
+                                var index = Products.length;
+                                var ID = data.id;
+                                var MarketId = data.marketId;
+                                var IsEnabled = data.isEnabled;
+                                var Price = data.price;
+                                var obj = {};
+                                obj[`products[${index}].ID`] = `${ID}`;
+                                obj[`products[${index}].MarketId`] = `${MarketId}`;
+                                obj[`products[${index}].IsEnabled`] = `${IsEnabled}`;
+                                obj[`products[${index}].Price`] = `${Price}`;
+                                obj[`ID`] = `${ID}`;
+
+                                Products.push(obj);
+                            }
+                            
+
+                            SelectBtn = `<input class="IsEnabled" type='checkbox' checked value="true"  />`
                         }
                         else {
-                            SelectBtn = `<input class="IsEnabled" type='checkbox'  value="true" name="products[${data.rowNumber}].IsEnabled"/>`
+                            SelectBtn = `<input class="IsEnabled" type='checkbox'  value="true"/>`
                         }
 
 
@@ -613,11 +688,34 @@
         function AddMarketProducts() {
             var formData = new FormData();
 
-            var SerializedData = $("#AddMarketProductsForm").serializeArray();
+            //var SerializedData = $("#AddMarketProductsForm").serializeArray();
+
+            var SerializedData = [];
+
+            $.each(Products, function (index,item) {
+                var IDKey = Object.keys(item)[0];
+                var MarketIdKey = Object.keys(item)[1];
+                var IsEnabledKey = Object.keys(item)[2];
+                var PriceKey = Object.keys(item)[3];
+
+
+                var IdObj = { name: IDKey, value: item[IDKey] };
+                var MarketIdObj = { name: MarketIdKey, value: item[MarketIdKey] };
+                var IsEnabledObj = { name: IsEnabledKey, value: item[IsEnabledKey] };
+                var PriceObj = { name: PriceKey, value: item[PriceKey] };
+
+                SerializedData.push(IdObj);
+                SerializedData.push(MarketIdObj);
+                SerializedData.push(IsEnabledObj);
+                SerializedData.push(PriceObj);
+
+            });
+
 
             $.each(SerializedData, function (index, item) {
                 formData.append(item.name, item.value);
             });
+
 
             $.ajax({
                 type: 'POST',
@@ -632,8 +730,9 @@
             success: function (data) {
 
                 if (data.status == true) {
+                    Products = [];
                     $('#AddMarketProductsModal').modal('hide');
-                }
+                } 
 
                 //if (data.Message.Title != null && data.Message.Title != "" ) {
                 //    var title = data.Message.Title;
