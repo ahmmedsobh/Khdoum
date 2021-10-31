@@ -339,7 +339,19 @@
                 }
             });
 
-            
+            $(document).on("keyup", ".Price", function () {
+                var IsEnabled = $(this).closest('tr').find(".IsEnabled").is(":checked");
+                if (IsEnabled) {
+                    if ($(this).val() > 0) {
+                        var ID = $(this).closest("tr").find('.ID').val();
+                        var i = Products.findIndex(x => x.ID === ID);
+                        if (i > -1) {
+                            var PriceKey = Object.keys(Products[i])[3];
+                            Products[i][PriceKey] = $(this).val();
+                        }
+                    }
+                }
+            })
 
 
         });
@@ -616,7 +628,7 @@
                             img = `<img src="@Model.BaseAddres/Uploads/default.png" class="tbl-img"/>`
                         }
                         else {
-                            img = `<img src="@Model.BaseAddres/Uploads/Markets/${data.imgUrl}" class="tbl-img"/>`
+                            img = `<img src="@Model.BaseAddres/Uploads/Products/${data.imgUrl}" class="tbl-img"/>`
                         }
 
                         return img;
