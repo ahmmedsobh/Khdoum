@@ -89,7 +89,8 @@ namespace Khdoum.Api.Servicies
                                 UnitName = u.Name,
                                 QuantityDuration = p.QuantityDuration,
                                 MarketId = mp.UserId,
-                                MarketName = m.Name
+                                MarketName = m.Name,
+                                ProductId = p.ID
                             }).ToListAsync();
 
             return await products;

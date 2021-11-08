@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Khdoum.Api.Models
@@ -11,6 +12,8 @@ namespace Khdoum.Api.Models
         public string Name { get; set; }
         public string ImgUrl { get; set; }
         public List<MarketProducts> MarketProducts { get; set; }
+
+        [JsonIgnore]
         public List<Order> Orders { get; set; }
 
 

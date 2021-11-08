@@ -21,6 +21,8 @@ namespace Khdoum.Api.Models.ViewModels
         public decimal QuantityDuration { get; set; }
         public string MarketId { get; set; }
         public string MarketName { get; set; }
+        public long ProductId { get; set; }
+
 
 
         public List<MarketProducts> MarketProducts { get; set; }

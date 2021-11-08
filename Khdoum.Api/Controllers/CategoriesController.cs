@@ -2,6 +2,7 @@
 using Khdoum.Api.Interfaces;
 using Khdoum.Api.Models;
 using Khdoum.Api.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -52,6 +53,7 @@ namespace Khdoum.Api.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet("GetFrom1To2LevelCategories")]
         public async Task<ActionResult> GetFrom1To2LevelCategories()
         {
@@ -66,6 +68,7 @@ namespace Khdoum.Api.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet("{GetChildCategories}/{ParentId:long}")]
         public async Task<ActionResult> GetChildCategories(long ParentId)
         {

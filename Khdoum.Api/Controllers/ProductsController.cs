@@ -2,6 +2,7 @@
 using Khdoum.Api.Interfaces;
 using Khdoum.Api.Models;
 using Khdoum.Api.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -39,6 +40,7 @@ namespace Khdoum.Api.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet("GetProductsByCategoryId/{CategoryId:long}")]
         public async Task<ActionResult> GetProductsByCategoryId(long CategoryId)
         {
