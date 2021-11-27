@@ -13,5 +13,9 @@ namespace Khdoum.Api.Models.ViewModels
 
         [Required(ErrorMessage = "كلمة المرور مطلوبة")]
         public string Password { get; set; }
+
+        [Required(ErrorMessage = "الاسم مطلوب")]
+        public string Name { get; set; }
+
     }
 }

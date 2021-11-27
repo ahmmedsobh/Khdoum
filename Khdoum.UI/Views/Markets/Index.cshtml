@@ -74,6 +74,16 @@
                                 <span asp-validation-for="Image" class="text-danger"></span>
                             </div>
 
+                            <div class="form-group">
+                                <label class="control-label">المنطقة</label>
+                                <select name="StateId" class="form-control StateId SelectTwo">
+                                    @foreach (var item in Model.States)
+                                    {
+                                        <option value="@item.ID">@item.Name</option>
+                                    }
+                                </select>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -116,6 +126,15 @@
                                 <label asp-for="Image" class="control-label">الصورة</label>
                                 <input asp-for="Image" id="Image" type="file" class="form-control" />
                                 <span asp-validation-for="Image" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">المنطقة</label>
+                                <select name="StateId" class="form-control StateId SelectTwo">
+                                    @foreach (var item in Model.States)
+                                    {
+                                        <option value="@item.ID">@item.Name</option>
+                                    }
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -161,6 +180,15 @@
                                 <label asp-for="Image" class="control-label">الصورة</label>
                                 <input readonly asp-for="Image" id="Image" type="file" class="form-control" />
                                 <span asp-validation-for="Image" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">المنطقة</label>
+                                <select disabled name="StateId" class="form-control StateId SelectTwo">
+                                    @foreach (var item in Model.States)
+                                    {
+                                        <option value="@item.ID">@item.Name</option>
+                                    }
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -439,6 +467,9 @@
                     $(`#${modal} .Name`).val(data.market.name);
                     $(`#${modal} .Phone`).val(data.market.phone);
                     $(`#${modal} .Email`).val(data.market.email);
+
+                    $(`#${modal} .StateId`).val(data.market.stateId);
+                    $(`#${modal} .StateId`).change();
 
                     $(`#${modal}`).modal('show');
                 }

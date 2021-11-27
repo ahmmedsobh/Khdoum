@@ -22,6 +22,9 @@ namespace Khdoum.Api.Models.ViewModels
         public string MarketId { get; set; }
         public string MarketName { get; set; }
         public long ProductId { get; set; }
+        public int StateId { get; set; }
+        public string StateName { get; set; }
+        public decimal DeliveryService { get; set; }
 
 
 

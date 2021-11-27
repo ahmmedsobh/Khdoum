@@ -41,7 +41,8 @@ namespace Khdoum.Api.Servicies
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = Market.Phone,
                 PhoneNumber = Market.Phone,
-                ImgUrl = Market.ImgUrl
+                ImgUrl = Market.ImgUrl,
+                StateId = Market.StateId
             };
 
             var result = await userManager.CreateAsync(user, Market.Password);
@@ -125,7 +126,8 @@ namespace Khdoum.Api.Servicies
                 Name = user.Name,
                 Phone = user.PhoneNumber,
                 Email = user.Email,
-                ImgUrl = user.ImgUrl
+                ImgUrl = user.ImgUrl,
+                StateId = user.StateId
                 //ImgUrl = user.ImgUrl == "false" ? $"{Constants.BaseAddress}Uploads/default.png" : $"{Constants.BaseAddress}Uploads/Markets/{user.ImgUrl}",
             };
         }
@@ -211,6 +213,7 @@ namespace Khdoum.Api.Servicies
             user.Name = Market.Name;
             user.Email = Market.Email;
             user.ImgUrl = Market.ImgUrl;
+            user.StateId = Market.StateId;
 
             var result = await userManager.UpdateAsync(user);
             if (!result.Succeeded)
@@ -232,6 +235,17 @@ namespace Khdoum.Api.Servicies
                     IsEnabled = true
                 };
             }
+
+            var product = context.Products.FirstOrDefault(p => p.ID == ProductId);
+            if(product != null)
+            {
+                return new MarketProductsViewModel()
+                {
+                    Price = product.Price,
+                    IsEnabled = false
+                };
+            }
+
 
             return new MarketProductsViewModel();
         }

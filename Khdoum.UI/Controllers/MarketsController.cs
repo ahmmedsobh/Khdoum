@@ -13,9 +13,11 @@ namespace Khdoum.UI.Controllers
 {
     public class MarketsController : Controller
     {
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View(new Market());
+            var market = new Market();
+            market.States = (await StatesList()).ToList();
+            return View(market);
         }
         public async Task<IActionResult> GetList()
         {
@@ -71,6 +73,9 @@ namespace Khdoum.UI.Controllers
                 content.Add(new StringContent(Market.Phone.ToString()), "Phone");
                 content.Add(new StringContent(Market.Email.ToString()), "Email");
                 content.Add(new StringContent(Market.Password.ToString()), "Password");
+                content.Add(new StringContent(Market.StateId.ToString()), "StateId");
+
+                
                 if (Market.Image != null)
                 {
                     var FileContent = new StreamContent(Market.Image.OpenReadStream());
@@ -117,6 +122,8 @@ namespace Khdoum.UI.Controllers
                 content.Add(new StringContent(Market.Phone.ToString()), "Phone");
                 content.Add(new StringContent(Market.Email.ToString()), "Email");
                 content.Add(new StringContent(Market.Password.ToString()), "Password");
+                content.Add(new StringContent(Market.StateId.ToString()), "StateId");
+
                 if (Market.Image != null)
                 {
                     var FileContent = new StreamContent(Market.Image.OpenReadStream());
@@ -229,6 +236,21 @@ namespace Khdoum.UI.Controllers
             {
                 Status = false
             });
+        }
+
+        public async Task<IEnumerable<State>> StatesList()
+        {
+            IEnumerable<State> States = new List<State>();
+            var Client = new HttpClient();
+            var json = "";
+            HttpResponseMessage response = await Client.GetAsync($"{Constant.BaseAddress}api/States");
+            if (response.IsSuccessStatusCode)
+            {
+                json = await response.Content.ReadAsStringAsync();
+                States = JsonConvert.DeserializeObject<IEnumerable<State>>(json);
+            }
+
+            return States;
         }
     }
 }

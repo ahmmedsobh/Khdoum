@@ -24,6 +24,7 @@ namespace Khdoum.Api.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<State> States { get; set; }
         public DbSet<Unit> Units { get; set; }
+        public DbSet<GeneralDelivery> GeneralDeliveries { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -61,6 +62,32 @@ namespace Khdoum.Api.Data
                 .WithMany(u => u.MarketProducts)
                 .HasForeignKey(MP => MP.UserId)
                 .IsRequired();
+
+
+            modelBuilder.Entity<ApplicationUser>()
+                        .HasMany(u => u.Orders)
+                        .WithOne(o => o.User);
+
+            modelBuilder.Entity<ApplicationUser>()
+                        .HasMany(u => u.DeliveryOrders)
+                        .WithOne(o => o.Delivery);
+
+            modelBuilder.Entity<State>()
+                        .HasMany(u => u.Orders)
+                        .WithOne(o => o.State);
+
+            modelBuilder.Entity<State>()
+                        .HasMany(u => u.ToOrders)
+                        .WithOne(o => o.ToState);
+
+            modelBuilder.Entity<State>()
+                       .HasMany(s => s.ToGeneralDeliveries)
+                       .WithOne(g => g.ToState);
+
+            modelBuilder.Entity<State>()
+                        .HasMany(u => u.FromGeneralDeliveries)
+                        .WithOne(o => o.FromState);
+
 
             base.OnModelCreating(modelBuilder);
         }

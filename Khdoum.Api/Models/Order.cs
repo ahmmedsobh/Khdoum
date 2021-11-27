@@ -20,10 +20,14 @@ namespace Khdoum.Api.Models
         public int Status { get; set; }
         public int CityId { get; set; } = 1;
         public City City { get; set; } 
-        public int StateId { get; set; } = 1;
+        public int? StateId { get; set; } = 1;
         public State State { get; set; }
+        public int? ToStateId { get; set; } = 1;
+        public State ToState { get; set; }
         public string UserId { get; set; }
         public ApplicationUser User { get; set; }
+        public string DeliveryId { get; set; }
+        public ApplicationUser Delivery { get; set; }
         public List<OrderDetails> OrderDetails { get; set; }
     }
 }

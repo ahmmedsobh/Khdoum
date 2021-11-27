@@ -44,10 +44,8 @@ namespace Khdoum.Api.Servicies
                     await context.OrderDetails.AddAsync(OrderDetails);
                 }
 
-                if((await context.SaveChangesAsync()) > 0)
-                {
-                    return await Task.FromResult(true);
-                }
+                await context.SaveChangesAsync();
+                return await Task.FromResult(true);
             }
 
             return await Task.FromResult(false);

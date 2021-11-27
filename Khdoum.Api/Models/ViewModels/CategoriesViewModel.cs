@@ -15,5 +15,7 @@ namespace Khdoum.Api.Models.ViewModels
         public string ImgUrl { get; set; }
         public bool IsActive { get; set; }
         public IFormFile Image { get; set; }
+        public string PageLink { get; set; }
+
     }
 }

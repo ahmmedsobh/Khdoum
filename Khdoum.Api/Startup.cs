@@ -77,6 +77,8 @@ namespace Khdoum.Api
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IMarketService, MarketService>();
             services.AddScoped<IOrderService,OrderService>();
+            services.AddScoped<IStateService,StateService>();
+            services.AddScoped<IGeneralDelivery,GeneralDeliveryService>();
             services.AddScoped<UploadImages>();
         }
 

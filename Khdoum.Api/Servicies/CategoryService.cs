@@ -85,7 +85,8 @@ namespace Khdoum.Api.Servicies
                                           CategoryIcon = item.ImgUrl == "false"? $"{Constants.BaseAddress}Uploads/default.png" : $"{Constants.BaseAddress}Uploads/Categories/{item.ImgUrl}",
                                           CategoryId = Convert.ToInt32(c.ParentId),
                                           CategoryName = item.Name,
-                                          LevelStatus = c.LevelStatus
+                                          LevelStatus = c.LevelStatus,
+                                          PageLink = c.PageLink
                                       }).ToListAsync();
 
                 if(ChildCategories != null)

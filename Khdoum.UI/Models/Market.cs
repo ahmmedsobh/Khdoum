@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Khdoum.UI.Models.ViewModels;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -13,15 +14,16 @@ namespace Khdoum.UI.Models
         public string Name { get; set; }
         public string Phone { get; set; }
         public string Email { get; set; }
-
         [DataType(DataType.Password)]
         public string Password { get; set; }
-
         [DataType(DataType.Password)]
         [Required(ErrorMessage = "Confirm Password is Required")]
         [Compare("Password", ErrorMessage = "Password and Confirm Password do not match")]
         public string ConfirmPassword { get; set; }
         public string ImgUrl { get; set; }
         public IFormFile Image { get; set; }
+        [Required]
+        public int? StateId { get; set; }
+        public List<State> States { get; set; } = new List<State>();
     }
 }

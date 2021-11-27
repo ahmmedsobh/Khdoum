@@ -147,7 +147,6 @@ namespace Khdoum.Api.Controllers
 
                 categoryToUpdate.Name = category.Name;
                 categoryToUpdate.ParentId = category.ParentId;
-                categoryToUpdate.LevelStatus = category.LevelStatus;
                 categoryToUpdate.IsActive = category.IsActive;
                 categoryToUpdate.ImgUrl = uploadImages.UpdateImage(categoryToUpdate.ImgUrl, category.Image);
 

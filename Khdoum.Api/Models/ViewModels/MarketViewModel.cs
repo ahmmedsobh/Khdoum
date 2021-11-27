@@ -21,6 +21,7 @@ namespace Khdoum.Api.Models.ViewModels
         public string ConfirmPassword { get; set; }
         public string ImgUrl { get; set; }
         public IFormFile Image { get; set; }
+        public int? StateId { get; set; }
 
     }
 }

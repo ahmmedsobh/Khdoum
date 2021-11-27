@@ -11,11 +11,12 @@ namespace Khdoum.Api.Models
     {
         public string Name { get; set; }
         public string ImgUrl { get; set; }
+        public int? StateId { get; set; }
+        public State State { get; set; }
         public List<MarketProducts> MarketProducts { get; set; }
-
         [JsonIgnore]
         public List<Order> Orders { get; set; }
-
-
+        [JsonIgnore]
+        public List<Order> DeliveryOrders { get; set; }
     }
 }

@@ -131,26 +131,27 @@ namespace Khdoum.UI.Controllers
                 Status = 1,
                 UserId = "e7ef2099-baa3-4137-bbef-cd1666face01",
                 CityId = 1,
-                StateId = 1
+                StateId = 2,
+                ToStateId = 3
             };
 
-            Order.OrderDetails = new List<Api.Models.ViewModels.OrderDetailsViewModel>()
-            {
-                new Api.Models.ViewModels.OrderDetailsViewModel()
-                {
-                    Quantity = 2,
-                    Price = 3.5M,
-                    Value = 7,
-                    ProductId = 1,
-                },
-                new Api.Models.ViewModels.OrderDetailsViewModel()
-                {
-                    Quantity = 3,
-                    Price = 4,
-                    Value = 12,
-                    ProductId = 2,
-                }
-            };
+            Order.OrderDetails = new List<Api.Models.ViewModels.OrderDetailsViewModel>();
+            //{
+            //    new Api.Models.ViewModels.OrderDetailsViewModel()
+            //    {
+            //        Quantity = 2,
+            //        Price = 3.5M,
+            //        Value = 7,
+            //        ProductId = 1,
+            //    },
+            //    new Api.Models.ViewModels.OrderDetailsViewModel()
+            //    {
+            //        Quantity = 3,
+            //        Price = 4,
+            //        Value = 12,
+            //        ProductId = 2,
+            //    }
+            //};
 
             var json = JsonConvert.SerializeObject(Order);
             HttpContent content = new StringContent(json);

@@ -13,7 +13,7 @@ namespace Khdoum.Api.Models
         public bool LevelStatus { get; set; }
         public string  ImgUrl { get; set; }
         public bool IsActive { get; set; }
-
+        public string PageLink { get; set; }
         public List<Product> Products { get; set; }
     }
 }

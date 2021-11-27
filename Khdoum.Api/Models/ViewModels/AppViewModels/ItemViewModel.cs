@@ -19,5 +19,6 @@ namespace Khdoum.Api.Models.ViewModels.AppViewModels
         public string CategoryName { get; set; }
         public bool IsLink { get; set; }
         public bool LevelStatus { get; set; }
+        public string PageLink { get; set; }
     }
 }

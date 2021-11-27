@@ -4,14 +4,16 @@ using Khdoum.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Khdoum.Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211121173330_m1")]
+    partial class m1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -70,9 +72,6 @@ namespace Khdoum.Api.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("StateId")
-                        .HasColumnType("int");
-
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
@@ -89,8 +88,6 @@ namespace Khdoum.Api.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.HasIndex("StateId");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -112,9 +109,6 @@ namespace Khdoum.Api.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PageLink")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("ParentId")
@@ -144,31 +138,6 @@ namespace Khdoum.Api.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Cities");
-                });
-
-            modelBuilder.Entity("Khdoum.Api.Models.GeneralDelivery", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<decimal>("DeliveryService")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("FromStateId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ToStateId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FromStateId");
-
-                    b.HasIndex("ToStateId");
-
-                    b.ToTable("GeneralDeliveries");
                 });
 
             modelBuilder.Entity("Khdoum.Api.Models.MarketProducts", b =>
@@ -216,9 +185,6 @@ namespace Khdoum.Api.Migrations
                     b.Property<int>("DeliveryData")
                         .HasColumnType("int");
 
-                    b.Property<string>("DeliveryId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<decimal>("DeliveryService")
                         .HasColumnType("decimal(18,2)");
 
@@ -231,13 +197,10 @@ namespace Khdoum.Api.Migrations
                     b.Property<string>("Phone")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("StateId")
+                    b.Property<int>("StateId")
                         .HasColumnType("int");
 
                     b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ToStateId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Total")
@@ -250,11 +213,7 @@ namespace Khdoum.Api.Migrations
 
                     b.HasIndex("CityId");
 
-                    b.HasIndex("DeliveryId");
-
                     b.HasIndex("StateId");
-
-                    b.HasIndex("ToStateId");
 
                     b.HasIndex("UserId");
 
@@ -500,30 +459,6 @@ namespace Khdoum.Api.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Khdoum.Api.Models.ApplicationUser", b =>
-                {
-                    b.HasOne("Khdoum.Api.Models.State", "State")
-                        .WithMany("Markets")
-                        .HasForeignKey("StateId");
-
-                    b.Navigation("State");
-                });
-
-            modelBuilder.Entity("Khdoum.Api.Models.GeneralDelivery", b =>
-                {
-                    b.HasOne("Khdoum.Api.Models.State", "FromState")
-                        .WithMany("FromGeneralDeliveries")
-                        .HasForeignKey("FromStateId");
-
-                    b.HasOne("Khdoum.Api.Models.State", "ToState")
-                        .WithMany("ToGeneralDeliveries")
-                        .HasForeignKey("ToStateId");
-
-                    b.Navigation("FromState");
-
-                    b.Navigation("ToState");
-                });
-
             modelBuilder.Entity("Khdoum.Api.Models.MarketProducts", b =>
                 {
                     b.HasOne("Khdoum.Api.Models.Product", "Product")
@@ -551,17 +486,11 @@ namespace Khdoum.Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Khdoum.Api.Models.ApplicationUser", "Delivery")
-                        .WithMany("DeliveryOrders")
-                        .HasForeignKey("DeliveryId");
-
                     b.HasOne("Khdoum.Api.Models.State", "State")
                         .WithMany("Orders")
-                        .HasForeignKey("StateId");
-
-                    b.HasOne("Khdoum.Api.Models.State", "ToState")
-                        .WithMany("ToOrders")
-                        .HasForeignKey("ToStateId");
+                        .HasForeignKey("StateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Khdoum.Api.Models.ApplicationUser", "User")
                         .WithMany("Orders")
@@ -569,11 +498,7 @@ namespace Khdoum.Api.Migrations
 
                     b.Navigation("City");
 
-                    b.Navigation("Delivery");
-
                     b.Navigation("State");
-
-                    b.Navigation("ToState");
 
                     b.Navigation("User");
                 });
@@ -680,8 +605,6 @@ namespace Khdoum.Api.Migrations
 
             modelBuilder.Entity("Khdoum.Api.Models.ApplicationUser", b =>
                 {
-                    b.Navigation("DeliveryOrders");
-
                     b.Navigation("MarketProducts");
 
                     b.Navigation("Orders");
@@ -713,15 +636,7 @@ namespace Khdoum.Api.Migrations
 
             modelBuilder.Entity("Khdoum.Api.Models.State", b =>
                 {
-                    b.Navigation("FromGeneralDeliveries");
-
-                    b.Navigation("Markets");
-
                     b.Navigation("Orders");
-
-                    b.Navigation("ToGeneralDeliveries");
-
-                    b.Navigation("ToOrders");
                 });
 
             modelBuilder.Entity("Khdoum.Api.Models.Unit", b =>

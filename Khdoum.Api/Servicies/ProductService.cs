@@ -74,8 +74,10 @@ namespace Khdoum.Api.Servicies
                             from mp in context.MarketProducts
                             from c in context.Categories
                             from u in context.Units
+                            from s in context.States
                             where p.CategoryId == c.ID && p.UnitId == u.ID && p.CategoryId == CategoryId
-                            && mp.ProductId == p.ID && mp.UserId == m.Id
+                            && mp.ProductId == p.ID && mp.UserId == m.Id 
+                            && m.StateId == s.ID 
                             select new ProductViewModel
                             {
                                 ID = mp.ID,
@@ -90,7 +92,10 @@ namespace Khdoum.Api.Servicies
                                 QuantityDuration = p.QuantityDuration,
                                 MarketId = mp.UserId,
                                 MarketName = m.Name,
-                                ProductId = p.ID
+                                ProductId = p.ID,
+                                StateName = s.Name,
+                                StateId = s.ID,
+                                DeliveryService = s.DeliveryService
                             }).ToListAsync();
 
             return await products;
