@@ -121,18 +121,19 @@ namespace Khdoum.UI.Controllers
             Order.Order = new Api.Models.Order()
             {
                 Date = DateTime.Now,
-                Total = 100.5M,
+                Total = 100,
                 Address = "عنوان",
                 Notes = "",
                 Phone = "",
-                DeliveryService = 5,
+                DeliveryService = 20,
                 IsActive = true,
                 DeliveryData = 2,
                 Status = 1,
-                UserId = "e7ef2099-baa3-4137-bbef-cd1666face01",
-                CityId = 1,
+                UserId = null,
+                CityId = 0,
                 StateId = 2,
-                ToStateId = 3
+                ToStateId = 3,
+                DeliveryId = null
             };
 
             Order.OrderDetails = new List<Api.Models.ViewModels.OrderDetailsViewModel>();

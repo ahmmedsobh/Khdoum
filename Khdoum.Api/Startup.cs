@@ -40,7 +40,7 @@ namespace Khdoum.Api
             services.AddHttpContextAccessor();
 
             // For Entity Framework  
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ConnStr")));
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("ApplicationDbContext")));
 
             // For Identity  
             services.AddIdentity<ApplicationUser, IdentityRole>()

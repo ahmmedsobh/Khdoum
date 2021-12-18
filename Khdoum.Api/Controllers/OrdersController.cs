@@ -41,8 +41,8 @@ namespace Khdoum.Api.Controllers
         }
 
         [Authorize]
-        [HttpGet("GetOrdersWithoutDetailsForUser")]
-        public async Task<ActionResult> GetOrdersWithoutDetailsForUser()
+        [HttpGet("GetOrdersByStatusWithoutDetailsForUser/{Status}")]
+        public async Task<ActionResult> GetOrdersByStatusWithoutDetailsForUser(int Status = 0 )
         {
             try
             {
@@ -61,7 +61,7 @@ namespace Khdoum.Api.Controllers
                     return BadRequest();
                 }
 
-                var orders = await Orders.GetOrdersWithoutDetailsForUser(UserId);
+                var orders = await Orders.GetOrdersByStatusWithoutDetailsForUser(UserId,Status);
 
                 return Ok(orders);
             }

@@ -22,6 +22,16 @@ namespace Khdoum.Api.Servicies
 
         public async Task<bool> AddOrder(OrderViewModel Order)
         {
+
+            if(Order.Order.ToStateId != null && Order.Order.ToStateId != 0)
+            {
+                var state =await context.States.FirstOrDefaultAsync(s => s.ID == Order.Order.ToStateId);
+                if(state != null)
+                {
+                    Order.Order.CityId = state.CityId;
+                }
+            }
+
             await context.Orders.AddAsync(Order.Order);
             var result = await context.SaveChangesAsync();
 
@@ -107,9 +117,17 @@ namespace Khdoum.Api.Servicies
             return await context.Orders.ToListAsync();
         }
 
-        public async Task<IEnumerable<Order>> GetOrdersWithoutDetailsForUser(string UserId)
+        public async Task<IEnumerable<Order>> GetOrdersByStatusWithoutDetailsForUser(string UserId,int Status)
         {
-            var orders = await context.Orders.Where(o => o.UserId == UserId).ToListAsync();
+            var orders = new List<Order>();
+            if (Status == 0)
+            {
+                orders = await context.Orders.Where(o => o.UserId == UserId).ToListAsync();
+            }
+            else
+            {
+                orders = await context.Orders.Where(o => o.UserId == UserId && o.Status == Status).ToListAsync();
+            }
             return orders;
         }
 

@@ -11,7 +11,7 @@ namespace Khdoum.Api.Interfaces
     {
         Task<IEnumerable<OrderViewModel>> GetOrders();
         Task<IEnumerable<Order>> GetOrdersWithoutDetails();
-        Task<IEnumerable<Order>> GetOrdersWithoutDetailsForUser(string UserId);
+        Task<IEnumerable<Order>> GetOrdersByStatusWithoutDetailsForUser(string UserId,int Status);
         Task<OrderViewModel> GetOrder(long OrderId);
         Task<bool> AddOrder(OrderViewModel Order);
         Task<bool> UpdateOrderHeader(Order Order);
