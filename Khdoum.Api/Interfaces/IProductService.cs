@@ -11,6 +11,7 @@ namespace Khdoum.Api.Interfaces
     {
         Task<IEnumerable<ProductViewModel>> GetProducts();
         Task<IEnumerable<ProductViewModel>> GetProductsByCategoryId(long CategoryId);
+        Task<IEnumerable<ProductViewModel>> GetAllMarketsProducts(string term = "");
         Task<ProductViewModel> GetViewProduct(long ProductId);
         Task<Product> GetProduct(long ProductId);
         Task<Product> AddProduct(Product Product);

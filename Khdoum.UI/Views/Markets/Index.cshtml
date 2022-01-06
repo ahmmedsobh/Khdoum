@@ -291,7 +291,7 @@
 
             $(document).on("click", ".DetailsBtn", function () {
                 var ItemId = $(this).attr("ItemId");
-                console.log(ItemId);
+                
                 ViewData(ItemId, "ViewModal");
             });
 
@@ -301,7 +301,9 @@
             });
 
             $(document).on("click", ".AddProductsBtn", function () {
-                Products = [];
+                Products.splice(0, Products.length);
+               
+
                 var ItemId = $(this).attr("ItemId");
                 FillProductsTable(ItemId);
                 $('#AddMarketProductsModal').modal('show');
@@ -401,7 +403,6 @@
             if (fileUpload != null && fileUpload != undefined) {
                 var file = fileUpload.files[0];
                 fileData.append('Image', file);
-                console.log(file);
             }
 
 
@@ -507,7 +508,6 @@
 
             $.each(SerializedData, function (index, item) {
                 fileData.append(item.name, item.value);
-                console.log(`${item.name}: ${item.value}`);
             });
 
 
@@ -649,7 +649,7 @@
         }
 
         function FillProductsTable(MarketId) {
-            var Url = "@Url.Action("GetMarketProductsList", "Markets")";
+            var Url = "@Url.Action($"GetMarketProductsList", "Markets")";
             var Columns = [
                 {
                     data: null, render: function (data, type, row) {
@@ -687,6 +687,7 @@
                         if (data.isEnabled) {
 
                             // fill products to bind with add market products action
+                           
 
                             var ID = `${data.id}`;
                             var i = Products.findIndex(x => x.ID === ID);
@@ -696,6 +697,10 @@
                                 var MarketId = data.marketId;
                                 var IsEnabled = data.isEnabled;
                                 var Price = data.price;
+
+
+                                
+
                                 var obj = {};
                                 obj[`products[${index}].ID`] = `${ID}`;
                                 obj[`products[${index}].MarketId`] = `${MarketId}`;
@@ -704,6 +709,14 @@
                                 obj[`ID`] = `${ID}`;
 
                                 Products.push(obj);
+
+                                
+
+                            }
+                            else {
+                                
+                                var PriceKey = Object.keys(Products[i])[3];
+                                Products[i][PriceKey] = data.price;
                             }
                             
 
@@ -721,7 +734,7 @@
             ];
 
             var data = {
-                MarketId: MarketId,
+                MarketId: MarketId
             };
 
 
@@ -773,7 +786,8 @@
             success: function (data) {
 
                 if (data.status == true) {
-                    Products = [];
+                    Products.splice(0, Products.length);
+
                     $('#AddMarketProductsModal').modal('hide');
                 } 
 

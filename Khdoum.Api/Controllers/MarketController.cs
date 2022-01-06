@@ -121,13 +121,14 @@ namespace Khdoum.Api.Controllers
         }
 
         [HttpGet("GetMarketProducts/{id}")]
-        public async Task<ActionResult> GetMarketProducts(string id)
+        public async Task<ActionResult<IEnumerable<MarketProductsViewModel>>> GetMarketProducts(string id)
         {
             try
             {
+                var c = (await MarketService.GetMarketProducts(id)).ToList();
                 return Ok(await MarketService.GetMarketProducts(id));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     "Error retrieving data from the database");

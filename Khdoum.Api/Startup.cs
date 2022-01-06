@@ -79,6 +79,14 @@ namespace Khdoum.Api
             services.AddScoped<IOrderService,OrderService>();
             services.AddScoped<IStateService,StateService>();
             services.AddScoped<IGeneralDelivery,GeneralDeliveryService>();
+            services.AddScoped<INotificationService, NotificationService>();
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
+            services.AddScoped<IOfferService, OffersService>();
+
+            
+
+
+
             services.AddScoped<UploadImages>();
         }
 

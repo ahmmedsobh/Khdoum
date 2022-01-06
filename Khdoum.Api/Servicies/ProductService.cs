@@ -40,6 +40,8 @@ namespace Khdoum.Api.Servicies
             return null;
         }
 
+        
+
         public async Task<Product> GetProduct(long ProductId)
         {
             return await context.Products.FirstOrDefaultAsync(p=>p.ID == ProductId);
@@ -100,7 +102,40 @@ namespace Khdoum.Api.Servicies
 
             return await products;
         }
+        public async Task<IEnumerable<ProductViewModel>> GetAllMarketsProducts(string term = "")
+        {
+            var products = (from p in context.Products
+                            from m in context.Users
+                            from mp in context.MarketProducts
+                            from c in context.Categories
+                            from u in context.Units
+                            from s in context.States
+                            where p.CategoryId == c.ID && p.UnitId == u.ID 
+                            && mp.ProductId == p.ID && mp.UserId == m.Id
+                            && m.StateId == s.ID
+                            && (p.Name.ToLower().Contains(term.ToLower()) || string.IsNullOrEmpty(term))
+                            select new ProductViewModel
+                            {
+                                ID = mp.ID,
+                                Name = p.Name,
+                                Price = mp.Price,
+                                ImgUrl = p.ImgUrl == "false" ? $"{Constants.BaseAddress}Uploads/default.png" : $"{Constants.BaseAddress}Uploads/Products/{p.ImgUrl}",
+                                IsActive = p.IsActive,
+                                CategoryId = p.CategoryId,
+                                UnitId = p.UnitId,
+                                CategoryName = c.Name,
+                                UnitName = u.Name,
+                                QuantityDuration = p.QuantityDuration,
+                                MarketId = mp.UserId,
+                                MarketName = m.Name,
+                                ProductId = p.ID,
+                                StateName = s.Name,
+                                StateId = s.ID,
+                                DeliveryService = s.DeliveryService
+                            }).ToListAsync();
 
+            return await products;
+        }
         public async Task<ProductViewModel> GetViewProduct(long ProductId)
         {
             var product = (from p in context.Products

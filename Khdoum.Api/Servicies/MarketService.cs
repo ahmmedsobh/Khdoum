@@ -114,6 +114,8 @@ namespace Khdoum.Api.Servicies
 
         }
 
+        
+
         public async Task<MarketViewModel> GetMarket(string MarketId)
         {
             var user = await userManager.FindByIdAsync(MarketId);
@@ -144,49 +146,36 @@ namespace Khdoum.Api.Servicies
             if(market == null)
                 return Products;
 
-            long index = 0;
+           long index = 0;
 
-            Products = from p in context.Products
-                       from c in context.Categories
-                       from u in context.Units
-                       where p.CategoryId == c.ID && p.UnitId == u.ID
-                       select new MarketProductsViewModel()
-                       {
-                           ID = p.ID,
-                           Name = p.Name,
-                           QuantityDuration = p.QuantityDuration,
-                           IsActive = p.IsActive,
-                           ImgUrl = p.ImgUrl,
-                           CategoryId = p.CategoryId,
-                           UnitId = p.UnitId,
-                           CategoryName = c.Name,
-                           UnitName =u.Name,
-                           MarketId = market.Id,
-                           MarketName = market.Name,
-                       };
+            var IQueryableProducts = from p in context.Products.Include(p => p.MarketProducts)
+                                     join c in context.Categories on p.CategoryId equals c.ID
+                                     join u in context.Units on p.UnitId equals u.ID
+                                     select new MarketProductsViewModel()
+                                     {
+                                         RowNumber = 1,
+                                         ID = p.ID,
+                                         Name = p.Name,
+                                         QuantityDuration = p.QuantityDuration,
+                                         IsActive = p.IsActive,
+                                         ImgUrl = p.ImgUrl,
+                                         CategoryId = p.CategoryId,
+                                         UnitId = p.UnitId,
+                                         CategoryName = c.Name,
+                                         UnitName = u.Name,
+                                         MarketId = market.Id,
+                                         MarketName = market.Name,
+                                         Price = p.MarketProducts.Any(mp => mp.UserId == MarketId) ? p.MarketProducts.FirstOrDefault(mp => mp.UserId == MarketId).Price : p.Price,
+                                         IsEnabled = p.MarketProducts.Any(mp => mp.UserId == MarketId) ? true:false
+                                    };
 
-            Products = from p in Products
-                       select new MarketProductsViewModel()
-                       {
-                           RowNumber = index++,
-                           ID = p.ID,
-                           Name = p.Name,
-                           Price = IsInMarketProducts(p.ID, market.Id).Price,
-                           QuantityDuration = p.QuantityDuration,
-                           IsActive = p.IsActive,
-                           ImgUrl = p.ImgUrl,
-                           CategoryId = p.CategoryId,
-                           UnitId = p.UnitId,
-                           CategoryName = p.CategoryName,
-                           UnitName = p.UnitName,
-                           MarketId = p.MarketId,
-                           MarketName = p.MarketName,
-                           IsEnabled = IsInMarketProducts(p.ID, market.Id).IsEnabled
-                       };
+           
 
 
-            return Products;
+            return await IQueryableProducts.ToListAsync();
         }
+
+        
 
         public async Task<IEnumerable<MarketViewModel>> GetMarkets()
         {
@@ -224,7 +213,7 @@ namespace Khdoum.Api.Servicies
         }
 
         // functions 
-        MarketProductsViewModel IsInMarketProducts(long ProductId,string MarketId)
+        static MarketProductsViewModel IsInMarketProducts(long ProductId,string MarketId,ApplicationDbContext context)
         {
             var MarketProduct = context.MarketProducts.FirstOrDefault(mp => mp.ProductId == ProductId && mp.UserId == MarketId);
             if(MarketProduct != null)

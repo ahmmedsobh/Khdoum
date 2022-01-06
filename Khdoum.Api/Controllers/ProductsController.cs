@@ -55,6 +55,21 @@ namespace Khdoum.Api.Controllers
             }
         }
 
+        //[Authorize]
+        [HttpGet("GetAllMarketsProducts/{term}")]
+        public async Task<ActionResult> GetAllMarketsProducts(string term = "")
+       {
+            try
+            {
+                return Ok(await Products.GetAllMarketsProducts(term));
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error retrieving data from the database");
+            }
+        }
+
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Product>> GetProduct(int id)
         {

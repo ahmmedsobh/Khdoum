@@ -4,14 +4,16 @@ using Khdoum.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Khdoum.Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220103202017_dproductoffer")]
+    partial class dproductoffer
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -385,51 +387,6 @@ namespace Khdoum.Api.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("Khdoum.Api.Models.ProductOffer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("Discount")
-                        .HasColumnType("int");
-
-                    b.Property<int>("DiscountType")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("ExpiryDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Img")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<long>("MarketProductsID")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("MarketProductsProductId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("MarketProductsUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("MaximumUseCount")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UsedCount")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MarketProductsUserId", "MarketProductsProductId");
-
-                    b.ToTable("ProductOffers");
-                });
-
             modelBuilder.Entity("Khdoum.Api.Models.State", b =>
                 {
                     b.Property<int>("ID")
@@ -757,17 +714,6 @@ namespace Khdoum.Api.Migrations
                     b.Navigation("Unit");
                 });
 
-            modelBuilder.Entity("Khdoum.Api.Models.ProductOffer", b =>
-                {
-                    b.HasOne("Khdoum.Api.Models.MarketProducts", "MarketProducts")
-                        .WithMany("ProductOffers")
-                        .HasForeignKey("MarketProductsUserId", "MarketProductsProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("MarketProducts");
-                });
-
             modelBuilder.Entity("Khdoum.Api.Models.State", b =>
                 {
                     b.HasOne("Khdoum.Api.Models.City", "City")
@@ -896,11 +842,6 @@ namespace Khdoum.Api.Migrations
             modelBuilder.Entity("Khdoum.Api.Models.Coupon", b =>
                 {
                     b.Navigation("UserCoupons");
-                });
-
-            modelBuilder.Entity("Khdoum.Api.Models.MarketProducts", b =>
-                {
-                    b.Navigation("ProductOffers");
                 });
 
             modelBuilder.Entity("Khdoum.Api.Models.Notification", b =>

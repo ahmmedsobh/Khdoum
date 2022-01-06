@@ -4,14 +4,16 @@ using Khdoum.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Khdoum.Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211229084524_addProductOfferToApplicationContext")]
+    partial class addProductOfferToApplicationContext
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -407,13 +409,13 @@ namespace Khdoum.Api.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<long>("MarketProductsID")
+                    b.Property<long>("MarketProductId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("MarketProductsProductId")
+                    b.Property<long>("MarketProductProductId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("MarketProductsUserId")
+                    b.Property<string>("MarketProductUserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
@@ -425,7 +427,7 @@ namespace Khdoum.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MarketProductsUserId", "MarketProductsProductId");
+                    b.HasIndex("MarketProductUserId", "MarketProductProductId");
 
                     b.ToTable("ProductOffers");
                 });
@@ -476,36 +478,44 @@ namespace Khdoum.Api.Migrations
 
             modelBuilder.Entity("Khdoum.Api.Models.UserCoupon", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("CouponId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("UserId", "CouponId");
+                    b.HasKey("Id");
 
                     b.HasIndex("CouponId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("UserCoupons");
                 });
 
             modelBuilder.Entity("Khdoum.Api.Models.UserNotifications", b =>
                 {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("NotificationId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("UserId", "NotificationId");
+                    b.HasKey("Id");
 
                     b.HasIndex("NotificationId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("UserNotifications");
                 });
@@ -759,13 +769,13 @@ namespace Khdoum.Api.Migrations
 
             modelBuilder.Entity("Khdoum.Api.Models.ProductOffer", b =>
                 {
-                    b.HasOne("Khdoum.Api.Models.MarketProducts", "MarketProducts")
+                    b.HasOne("Khdoum.Api.Models.MarketProducts", "MarketProduct")
                         .WithMany("ProductOffers")
-                        .HasForeignKey("MarketProductsUserId", "MarketProductsProductId")
+                        .HasForeignKey("MarketProductUserId", "MarketProductProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("MarketProducts");
+                    b.Navigation("MarketProduct");
                 });
 
             modelBuilder.Entity("Khdoum.Api.Models.State", b =>
@@ -789,9 +799,7 @@ namespace Khdoum.Api.Migrations
 
                     b.HasOne("Khdoum.Api.Models.ApplicationUser", "User")
                         .WithMany("UserCoupons")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Coupon");
 
@@ -808,9 +816,7 @@ namespace Khdoum.Api.Migrations
 
                     b.HasOne("Khdoum.Api.Models.ApplicationUser", "User")
                         .WithMany("Notifications")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Notification");
 

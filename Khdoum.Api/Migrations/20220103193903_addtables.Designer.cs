@@ -4,14 +4,16 @@ using Khdoum.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Khdoum.Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220103193903_addtables")]
+    partial class addtables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -407,13 +409,13 @@ namespace Khdoum.Api.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<long>("MarketProductsID")
+                    b.Property<long>("MarketProductId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("MarketProductsProductId")
+                    b.Property<long>("MarketProductProductId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("MarketProductsUserId")
+                    b.Property<string>("MarketProductUserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
@@ -425,7 +427,7 @@ namespace Khdoum.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MarketProductsUserId", "MarketProductsProductId");
+                    b.HasIndex("MarketProductUserId", "MarketProductProductId");
 
                     b.ToTable("ProductOffers");
                 });
@@ -759,13 +761,13 @@ namespace Khdoum.Api.Migrations
 
             modelBuilder.Entity("Khdoum.Api.Models.ProductOffer", b =>
                 {
-                    b.HasOne("Khdoum.Api.Models.MarketProducts", "MarketProducts")
+                    b.HasOne("Khdoum.Api.Models.MarketProducts", "MarketProduct")
                         .WithMany("ProductOffers")
-                        .HasForeignKey("MarketProductsUserId", "MarketProductsProductId")
+                        .HasForeignKey("MarketProductUserId", "MarketProductProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("MarketProducts");
+                    b.Navigation("MarketProduct");
                 });
 
             modelBuilder.Entity("Khdoum.Api.Models.State", b =>

@@ -25,6 +25,11 @@ namespace Khdoum.Api.Data
         public DbSet<State> States { get; set; }
         public DbSet<Unit> Units { get; set; }
         public DbSet<GeneralDelivery> GeneralDeliveries { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<UserNotifications> UserNotifications { get; set; }
+        public DbSet<Coupon> Coupons { get; set; }
+        public DbSet<UserCoupon> UserCoupons { get; set; }
+        public DbSet<ProductOffer> ProductOffers { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -63,6 +68,40 @@ namespace Khdoum.Api.Data
                 .HasForeignKey(MP => MP.UserId)
                 .IsRequired();
 
+            //UserNotifications
+            modelBuilder.Entity<UserNotifications>()
+                .HasKey(UN => new { UN.UserId, UN.NotificationId });
+
+
+            modelBuilder.Entity<UserNotifications>()
+                .HasOne(UN => UN.User)
+                .WithMany(u => u.Notifications)
+                .HasForeignKey(UN => UN.UserId)
+                .IsRequired();
+
+            modelBuilder.Entity<UserNotifications>()
+                .HasOne(UN => UN.Notification)
+                .WithMany(n => n.Notifications)
+                .HasForeignKey(UN => UN.NotificationId)
+                .IsRequired();
+
+            //UserCoupon
+            modelBuilder.Entity<UserCoupon>()
+                .HasKey(UC => new { UC.UserId, UC.CouponId });
+
+
+            modelBuilder.Entity<UserCoupon>()
+                .HasOne(UC => UC.User)
+                .WithMany(u => u.UserCoupons)
+                .HasForeignKey(UN => UN.UserId)
+                .IsRequired();
+
+            modelBuilder.Entity<UserCoupon>()
+                .HasOne(UC => UC.Coupon)
+                .WithMany(c => c.UserCoupons)
+                .HasForeignKey(UC => UC.CouponId)
+                .IsRequired();
+
 
             modelBuilder.Entity<ApplicationUser>()
                         .HasMany(u => u.Orders)
@@ -87,6 +126,10 @@ namespace Khdoum.Api.Data
             modelBuilder.Entity<State>()
                         .HasMany(u => u.FromGeneralDeliveries)
                         .WithOne(o => o.FromState);
+
+            modelBuilder.Entity<MarketProducts>()
+                        .HasMany(m => m.ProductOffers)
+                        .WithOne(o => o.MarketProducts);
 
 
             base.OnModelCreating(modelBuilder);

@@ -83,27 +83,34 @@ namespace Khdoum.Api.Servicies
         {
             OrderViewModel order = new OrderViewModel();
             order.Order = await context.Orders.FirstOrDefaultAsync(o => o.ID == OrderId);
-            order.OrderDetails =await (from od in context.OrderDetails
-                                       from o in context.Orders
-                                       from p in context.Products
-                                       from m in context.Users
-                                       from mp in context.MarketProducts
-                                       where o.ID == od.OrderId
-                                       && p.ID == od.ProductId
-                                       && p.ID == mp.ProductId
-                                       && m.Id == mp.UserId
-                                       && od.OrderId == OrderId
-                                  select new OrderDetailsViewModel
-                                  {
-                                      ProductId = od.ProductId,
-                                      OrderId = od.OrderId,
-                                      Quantity = od.Quantity,
-                                      Price = od.Price,
-                                      Value = od.Value,
-                                      MarketName = m.Name,
-                                      Name = p.Name,
-                                      ImgUrl = p.ImgUrl == "false" ? $"{Constants.BaseAddress}Uploads/default.png" : $"{Constants.BaseAddress}Uploads/Products/{p.ImgUrl}"
-                                  }).ToListAsync();
+            order.OrderDetails = await (from od in context.OrderDetails
+                                        from o in context.Orders
+                                        from p in context.Products
+                                        from m in context.Users
+                                        from mp in context.MarketProducts
+                                        where o.ID == od.OrderId
+                                        && p.ID == od.ProductId
+                                        && p.ID == mp.ProductId
+                                        && m.Id == mp.UserId
+                                        && od.OrderId == OrderId
+                                        //order.OrderDetails = await (from od in context.OrderDetails
+                                        //                            join o in context.Orders on od.OrderId equals o.ID
+                                        //                            join p in context.Products on od.ProductId equals p.ID
+                                        //                            join mp in context.MarketProducts on p.ID equals mp.ProductId
+                                        //                            join m in context.Users on mp.UserId equals m.Id
+                                        //                            where od.OrderId == OrderId
+
+                                        select new OrderDetailsViewModel
+                                        {
+                                            ProductId = od.ProductId,
+                                            OrderId = od.OrderId,
+                                            Quantity = od.Quantity,
+                                            Price = od.Price,
+                                            Value = od.Value,
+                                            MarketName = m.Name,
+                                            Name = p.Name,
+                                            ImgUrl = p.ImgUrl == "false" ? $"{Constants.BaseAddress}Uploads/default.png" : $"{Constants.BaseAddress}Uploads/Products/{p.ImgUrl}"
+                                        }).ToListAsync();
             return order;
         }
 

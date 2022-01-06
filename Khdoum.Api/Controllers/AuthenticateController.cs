@@ -66,7 +66,8 @@ namespace Khdoum.Api.Controllers
                     return Ok(new
                     {
                         token = new JwtSecurityTokenHandler().WriteToken(token),
-                        expiration = token.ValidTo
+                        expiration = token.ValidTo,
+                        name = user.Name 
                     });
                 }
                 return Unauthorized();
@@ -91,7 +92,8 @@ namespace Khdoum.Api.Controllers
                 Email = "ahmed@gmail.com",
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = model.Username,
-                Name = model.Name
+                Name = model.Name,
+                VisiblePassword = model.Password
             };
 
             var result = await userManager.CreateAsync(user, model.Password);

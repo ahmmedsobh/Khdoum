@@ -32,7 +32,7 @@ namespace Khdoum.Api.Controllers
             {
                 return Ok(await Categories.GetCategories());
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     "Error retrieving data from the database");
