@@ -39,7 +39,7 @@ namespace Khdoum.Api.Servicies
             if (result != null)
             {
                 var ChildCategories = await context.Categories.Where(c => c.ParentId == CategoryId).ToListAsync();
-                if(ChildCategories == null)
+                if(ChildCategories.Count() == 0)
                 {
                     context.Categories.Remove(result);
                     await context.SaveChangesAsync();

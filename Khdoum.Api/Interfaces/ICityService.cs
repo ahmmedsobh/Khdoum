@@ -10,8 +10,8 @@ namespace Khdoum.Api.Interfaces
     {
         Task<IEnumerable<City>> GetCities();
         Task<City> GetCity(int CityId);
-        Task<City> AddCity(City City);
-        Task<City> UpdateCity(City City);
-        Task<City> DeleteCity(int CityId);
+        Task<bool> AddCity(City City);
+        Task<bool> UpdateCity(City City);
+        Task<bool> DeleteCity(int CityId);
     }
 }

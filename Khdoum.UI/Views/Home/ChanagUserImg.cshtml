@@ -1,0 +1,13 @@
+﻿
+@{
+    ViewData["Title"] = "ChanagUserImg";
+    Layout = "~/Views/Shared/DashboardLayout.cshtml";
+}
+
+<h1>ChanagUserImg</h1>
+
+<form asp-action="ChanagUserImg" asp-controller="home" method="post" enctype="multipart/form-data">
+    <input name="ImgFile" type="file"/>
+    <button type="submit"></button>
+</form>
+

@@ -14,6 +14,7 @@ namespace Khdoum.Api.Models
         public string ImgUrl { get; set; }
         public string FirebaseAppToken { get; set; }
         public string VisiblePassword { get; set; }
+        public bool IsClientVerified { get; set; }
         public int? StateId { get; set; }
         public State State { get; set; }
         public List<MarketProducts> MarketProducts { get; set; }

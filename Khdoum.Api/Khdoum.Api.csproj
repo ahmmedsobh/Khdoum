@@ -21,9 +21,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\Categories\" />
     <Folder Include="wwwroot\Uploads\Categories\" />
     <Folder Include="wwwroot\Uploads\Markets\" />
+    <Folder Include="wwwroot\Uploads\Users\" />
     <Folder Include="wwwroot\Uploads\Products\" />
   </ItemGroup>
 

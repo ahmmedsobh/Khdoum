@@ -36,6 +36,20 @@ namespace Khdoum.Api.Controllers
             }
         }
 
+        [HttpGet("GetOffersForMobileApp")]
+        public async Task<ActionResult> GetOffersForMobileApp()
+        {
+            try
+            {
+                return Ok(await OfferService.GetOffersForMobileApp());
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error retrieving data from the database");
+            }
+        }
+
 
         [HttpGet("{id:int}")]
         public async Task<ActionResult<ProductOfferViewModel>> GetOffer(int id)

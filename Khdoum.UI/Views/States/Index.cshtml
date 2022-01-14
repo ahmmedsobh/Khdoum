@@ -1,0 +1,436 @@
+﻿@model Khdoum.UI.Models.State
+@{
+    Layout = "DashboardLayout";
+}
+
+<h1>قائمة المناطق</h1>
+<p>
+    <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#AddModal">اضافة جديد</a>
+</p>
+
+<table class="table table-striped table-bordered text-center" id="table">
+    <thead>
+        <tr>
+
+            <th>
+                الاسم
+            </th>
+            <th>
+                المدينة
+            </th>
+            <th>
+                الحالة
+            </th>
+            <th style="width:120px"></th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<!-- Modal -->
+<div class="modal fade" id="AddModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form id="AddForm" method="post">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">اضافة</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="form-group">
+                                <label asp-for="Name" class="control-label">الاسم</label>
+                                <input asp-for="Name" class="form-control Name" />
+                                <span asp-validation-for="Name" class="text-danger "></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">المدينة</label>
+                                <select name="CityId" class="form-control CityId" asp-items="Model.Cities"></select>
+                            </div>
+                            <div class="form-group form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input IsActive" value="true" asp-for="IsActive" /> الحالة
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">اغلاق</button>
+                    <button type="submit" id="AddBtn" class="btn btn-primary">اضافة</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<div class="modal fade" id="EditModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form id="EditForm" method="post">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">تعديل</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input name="ID" class="ID" type="hidden" />
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="form-group">
+                                <label asp-for="Name" class="control-label">الاسم</label>
+                                <input asp-for="Name" class="form-control Name" />
+                                <span asp-validation-for="Name" class="text-danger Name"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">المدينة</label>
+                                <select name="CityId" class="form-control CityId" asp-items="Model.Cities"></select>
+                            </div>
+                            <div class="form-group form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input IsActive" value="true" asp-for="IsActive" /> الحالة
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">الغاء</button>
+                    <button type="submit" id="SaveBtn" class="btn btn-primary">حفظ</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="ViewModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">عرض</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="form-group">
+                                <label asp-for="Name" class="control-label">الاسم</label>
+                                <input readonly asp-for="Name" class="form-control Name" />
+                                <span asp-validation-for="Name" class="text-danger "></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">المدينة</label>
+                                <select disabled name="CityId" class="form-control CityId" asp-items="Model.Cities"></select>
+                            </div>
+                            <div class="form-group form-check">
+                                <label class="form-check-label">
+                                    <input disabled class="form-check-input IsActive" value="true" asp-for="IsActive" /> الحالة
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">الغاء</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+@section Scripts
+{
+    <script>
+        $(function () {
+
+
+            FillTable();
+
+            $("#AddForm").submit(function (e) {
+                e.preventDefault();
+                Insert();
+            });
+
+            $("#EditForm").submit(function (e) {
+                e.preventDefault();
+                Update();
+            });
+
+            $(document).on("click", ".EditBtn", function () {
+                var ItemId = $(this).attr("ItemId");
+                ViewData(ItemId, "EditModal");
+            });
+
+            $(document).on("click", ".DetailsBtn", function () {
+                var ItemId = $(this).attr("ItemId");
+                console.log(ItemId);
+                ViewData(ItemId, "ViewModal");
+            });
+
+            $(document).on("click", ".DeleteBtn", function () {
+                var ItemId = $(this).attr("ItemId");
+                Delete(ItemId);
+            });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        });
+
+        function Insert() {
+
+            //if (!Validation('#add_modal')) {
+            //    e.preventDefault();
+            //    return;
+            //}
+
+            //Create FormData object
+            var fileData = new FormData();
+
+            var SerializedData = $("#AddForm").serializeArray();
+
+
+
+
+
+            $.each(SerializedData, function (index, item) {
+                fileData.append(item.name, item.value);
+            });
+
+
+            $.ajax({
+                type: 'POST',
+                url: `@Url.Action("Create", "States")`,
+                processData: false,
+                contentType: false,
+                data: fileData ,
+                //beforeSend: function () {
+
+                //},
+
+            success: function (data) {
+
+                if (data.status == true) {
+                    EmptyFeilds();
+                    $('#AddModal').modal('hide');
+                    FillTable();
+                }
+
+                //if (data.Message.Title != null && data.Message.Title != "" ) {
+                //    var title = data.Message.Title;
+                //    var body = data.Message.Description;
+                //    var type = data.Message.Type;
+                //    ShowMessage(title, body, type);
+                //}
+                },
+                error: function (ex) {
+
+                    console.log(ex);
+                    console.log(response);
+
+                    var r = jQuery.parseJSON(response.responseText);
+                    alert("Message: " + r.Message);
+                    alert("StackTrace: " + r.StackTrace);
+                    alert("ExceptionType: " + r.ExceptionType);
+                }
+            });
+
+        }
+
+        function ViewData(Id,modal) {
+            $.ajax({
+                type: 'POST',
+                url: `@Url.Action("GetSingle", "States")`,
+                data: {
+                    Id:Id
+                },
+                //beforeSend: function () {
+
+                //},
+
+                success: function (data) {
+
+
+
+                if (data.state.id > 0) {
+                    $(`#${modal} .ID`).val(data.state.id);
+                    $(`#${modal} .Name`).val(data.state.name);
+
+
+                    $(`#${modal} .CityId`).val(data.state.cityId);
+                    $(`#${modal} .CityId`).change();
+
+                    if (data.state.isActive) {
+                        $(`#${modal} .IsActive`).attr("checked", true);
+                    }
+                    else {
+                        $(`#${modal} .IsActive`).attr("checked", false);
+                    }
+
+
+                    $(`#${modal}`).modal('show');
+                }
+
+                },
+                error: function (ex) {
+
+                    var r = jQuery.parseJSON(response.responseText);
+                    alert("Message: " + r.Message);
+                    alert("StackTrace: " + r.StackTrace);
+                    alert("ExceptionType: " + r.ExceptionType);
+                }
+            });
+        }
+
+        function Update() {
+
+            //if (!Validation('#add_modal')) {
+            //    e.preventDefault();
+            //    return;
+            //}
+
+            //Create FormData object
+            var fileData = new FormData();
+
+            var SerializedData = $("#EditForm").serializeArray();
+
+
+            $.each(SerializedData, function (index, item) {
+                fileData.append(item.name, item.value);
+            });
+
+
+            $.ajax({
+                type: 'POST',
+                url: `@Url.Action("Update", "States")`,
+                processData: false,
+                contentType: false,
+                data: fileData ,
+                //beforeSend: function () {
+
+                //},
+
+            success: function (data) {
+
+                if (data.status == true) {
+                    $('#EditModal').modal('hide');
+                    FillTable();
+                }
+
+                //if (data.Message.Title != null && data.Message.Title != "" ) {
+                //    var title = data.Message.Title;
+                //    var body = data.Message.Description;
+                //    var type = data.Message.Type;
+                //    ShowMessage(title, body, type);
+                //}
+                },
+                error: function (ex) {
+
+
+
+                    var r = jQuery.parseJSON(response.responseText);
+                    alert("Message: " + r.Message);
+                    alert("StackTrace: " + r.StackTrace);
+                    alert("ExceptionType: " + r.ExceptionType);
+                }
+            });
+
+        }
+
+        function FillTable() {
+            var Url = "@Url.Action("GetList", "States")";
+            var Columns = [
+
+                { data: 'name', 'name': 'name' },
+                { data: 'cityName', 'cityName': 'cityName' },
+                { data: 'isActive', 'isActive': 'isActive' },
+                {
+                    data: null, render: function (data, type, row) {
+                        return `<a class="btn btn-warning tbl-btn EditBtn" ItemId="${data.id}" ><i class="fas fa-pen"></i></a>
+                                <a class="btn btn-info tbl-btn DetailsBtn" ItemId="${data.id}" ><i class="fas fa-info"></i></a>
+                                <a class="btn btn-danger tbl-btn DeleteBtn" ItemId="${data.id}" ><i class="fas fa-trash"></i></a>`;
+                    }
+                },
+            ];
+            BuildAjaxDataTable($("#table"), Url, Columns, [],"states",false);
+        }
+
+        function Delete(Id, Name = null) {
+
+            var name = (Name == null) ? "العنصر" : Name;
+
+            Swal.fire({
+                text: "هل انت متأكد من أنك تريد الحذف " + name + "?",
+                icon: "warning",
+                showCancelButton: !0,
+                buttonsStyling: !1,
+                confirmButtonText: "نعم احذف",
+                cancelButtonText: "الغاء",
+                customClass: {
+                    confirmButton: "btn fw-bold btn-danger",
+                    cancelButton: "btn fw-bold btn-active-light-primary"
+                }
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    //Swal.fire('Saved!', '', 'success')
+
+                    $.ajax({
+                        type: 'POST',
+                        url: `@Url.Action("Delete", "States")`,
+                        data: {
+                            Id: Id
+                        },
+                        //beforeSend: function () {
+
+                        //},
+
+                        success: function (data) {
+
+
+                            if (data.status == true) {
+                                FillTable();
+                            }
+
+
+
+                        },
+                        error: function (ex) {
+
+                            var r = jQuery.parseJSON(response.responseText);
+                            alert("Message: " + r.Message);
+                            alert("StackTrace: " + r.StackTrace);
+                            alert("ExceptionType: " + r.ExceptionType);
+                        }
+                    });
+
+
+                } else if (result.isDenied) {
+                    //Swal.fire('Changes are not saved', '', 'info')
+                }
+            });
+        }
+
+
+
+    </script>
+}

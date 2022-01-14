@@ -2,6 +2,7 @@
 using Khdoum.Api.Models.ViewModels;
 using Khdoum.UI.Helpers;
 using Khdoum.UI.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -202,7 +203,7 @@ namespace Khdoum.UI.Controllers
         {
             var client = new HttpClient();
 
-            var accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiMDEyNTg3NTY5NDUiLCJqdGkiOiJkYzE4NzFmNC0zYWY4LTQ5N2UtYWYwMC0wOWY5YjVjYmQ1OTciLCJleHAiOjE2NzIxNjk2OTYsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NjE5NTUiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjQyMDAifQ.9fasrDNS5gQGfz9iK_tuJA_ulDHnggoKBhusUMFGCKI";
+            var accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiMDEyNTg3NTY5NDUiLCJqdGkiOiJjNDY3MGVlZC1iZmE1LTQ2NWYtYjQ0Ny1kOGZlOWM4MmUwNjIiLCJleHAiOjE2NzI2NTc2NjAsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NjE5NTUiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjQyMDAifQ.rRoXitSuAcvLKoq3KRZvl5h6MbwHN5ZzDx2yeF-9GnM";
 
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
                 "Bearer", accessToken);
@@ -218,6 +219,49 @@ namespace Khdoum.UI.Controllers
             return BadRequest();
            
         }
+
+        public IActionResult ChanagUserImg()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChanagUserImg(IFormFile ImgFile)
+        {
+            var Client = new HttpClient();
+
+            var accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiMDEyNTg3NTY5NDUiLCJqdGkiOiJjNDY3MGVlZC1iZmE1LTQ2NWYtYjQ0Ny1kOGZlOWM4MmUwNjIiLCJleHAiOjE2NzI2NTc2NjAsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NjE5NTUiLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjQyMDAifQ.rRoXitSuAcvLKoq3KRZvl5h6MbwHN5ZzDx2yeF-9GnM";
+
+            Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+                "Bearer", accessToken);
+
+            MultipartFormDataContent content = new MultipartFormDataContent();
+
+
+            if (ImgFile != null)
+            {
+                var FileContent = new StreamContent(ImgFile.OpenReadStream());
+                FileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(ImgFile.ContentType);
+                FileContent.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("form-data")
+                {
+                    Name = "ImgFile",
+                    FileName = ImgFile.FileName
+                };
+                content.Add(FileContent);
+            }
+
+
+            var response = await Client.PostAsync(Constant.BaseAddress + "api/Clients/ChangeClientImg", content);
+            string ImgUrl = "";
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync();
+                ImgUrl = JsonConvert.DeserializeObject<string>(json);
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

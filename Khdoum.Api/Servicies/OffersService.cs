@@ -3,6 +3,7 @@ using Khdoum.Api.Helpers;
 using Khdoum.Api.Interfaces;
 using Khdoum.Api.Models;
 using Khdoum.Api.Models.ViewModels;
+using Khdoum.Api.Models.ViewModels.AppViewModels;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -80,6 +81,40 @@ namespace Khdoum.Api.Servicies
             return  offers;
         }
 
+        public async Task<IEnumerable<OffersViewModel>> GetOffersForMobileApp()
+        {
+            var Offers = (from mp in context.MarketProducts
+                            join p in context.Products on mp.ProductId equals p.ID
+                            join m in context.Users on mp.UserId equals m.Id
+                            join c in context.Categories on p.CategoryId equals c.ID
+                            join u in context.Units on p.UnitId equals u.ID 
+                            join s in context.States on m.StateId equals s.ID
+                            join o in context.ProductOffers on mp.ID equals o.MarketProductsID
+                            select new OffersViewModel
+                            {
+                                ID = mp.ID,
+                                Name = p.Name,
+                                Price = CalculateDiscount(o.Discount,mp.Price,o.DiscountType),
+                                ImgUrl = p.ImgUrl == "false" ? $"{Constants.BaseAddress}Uploads/default.png" : $"{Constants.BaseAddress}Uploads/Products/{p.ImgUrl}",
+                                IsActive = p.IsActive,
+                                CategoryId = p.CategoryId,
+                                UnitId = p.UnitId,
+                                CategoryName = c.Name,
+                                UnitName = u.Name,
+                                QuantityDuration = p.QuantityDuration,
+                                MarketId = mp.UserId,
+                                MarketName = m.Name,
+                                ProductId = p.ID,
+                                StateName = s.Name,
+                                StateId = s.ID,
+                                DeliveryService = s.DeliveryService,
+                                Discount = o.Discount,
+                                DiscountType = o.DiscountType
+                            }).ToListAsync();
+
+            return await Offers;
+        }
+
         public async Task<bool> UpdateOffer(ProductOffer offer)
         {
             context.ProductOffers.Update(offer);
@@ -92,5 +127,23 @@ namespace Khdoum.Api.Servicies
             var Result = await context.SaveChangesAsync() > 0 ? true : false;
             return Result;
         }
+
+        static decimal CalculateDiscount(int Discount, decimal Price,int DiscountType)
+        {
+            decimal PriceAfterDiscount = Price;
+            if (DiscountType == 1)
+            {
+                decimal DiscountPercent = decimal.Parse(Discount.ToString()) / 100;
+                decimal DiscountValue = Price * DiscountPercent;
+                PriceAfterDiscount = Price - DiscountValue;
+            }
+            else if (DiscountType == 2)
+            {
+                PriceAfterDiscount = Price - Discount;
+            }
+
+            return Math.Round(PriceAfterDiscount, 2);
+        }
+
     }
 }

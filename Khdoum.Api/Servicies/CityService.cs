@@ -18,24 +18,22 @@ namespace Khdoum.Api.Servicies
             this.context = context;
         }
 
-        public async Task<City> AddCity(City City)
+        public async Task<bool> AddCity(City City)
         {
-            var result = await context.Cities.AddAsync(City);
-            await context.SaveChangesAsync();
-            return result.Entity;
+            await context.Cities.AddAsync(City);
+            return await SaveChangesAsync();
         }
 
-        public async Task<City> DeleteCity(int CityId)
+        public async Task<bool> DeleteCity(int CityId)
         {
-            var result = await context.Cities
+            var result = await context.Cities.AsNoTracking()
                 .FirstOrDefaultAsync(c => c.ID == CityId);
             if (result != null)
             {
                 context.Cities.Remove(result);
-                await context.SaveChangesAsync();
-                return result;
+                return await SaveChangesAsync();
             }
-            return null;
+            return false;
         }
 
         public async Task<IEnumerable<City>> GetCities()
@@ -45,22 +43,27 @@ namespace Khdoum.Api.Servicies
 
         public async Task<City> GetCity(int CityId)
         {
-            return await context.Cities.FirstOrDefaultAsync(c=>c.ID == CityId);
+            return await context.Cities.AsNoTracking().FirstOrDefaultAsync(c=>c.ID == CityId);
         }
 
-        public async Task<City> UpdateCity(City City)
+        public async Task<bool> UpdateCity(City City)
         {
-            var result = await context.Cities
+            var result = await context.Cities.AsNoTracking()
                 .FirstOrDefaultAsync(c => c.ID == City.ID);
 
             if (result != null)
             {
                 context.Update(City);
-                await context.SaveChangesAsync();
-                return City;
+                return await SaveChangesAsync();
             }
 
-            return null;
+            return false;
+        }
+
+        async Task<bool> SaveChangesAsync()
+        {
+            var result = await context.SaveChangesAsync() > 0 ? true : false;
+            return result;
         }
     }
 }

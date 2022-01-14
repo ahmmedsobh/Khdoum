@@ -82,8 +82,12 @@ namespace Khdoum.Api
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddScoped<IOfferService, OffersService>();
+            services.AddScoped<ICityService, CityService>();
+            services.AddScoped<IStateService, StateService>();
+            services.AddScoped<IGeneralDelivery, GeneralDeliveryService>();
+            services.AddScoped<IClientService, ClientService>();
 
-            
+
 
 
 
@@ -91,7 +95,7 @@ namespace Khdoum.Api
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             if (env.IsDevelopment())
             {
@@ -109,6 +113,9 @@ namespace Khdoum.Api
             {
                 endpoints.MapControllers();
             });
+
+            DataSeeder.SeedData(userManager, roleManager);
+
         }
     }
 }

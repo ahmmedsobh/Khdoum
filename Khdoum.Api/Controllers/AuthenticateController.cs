@@ -97,6 +97,11 @@ namespace Khdoum.Api.Controllers
             };
 
             var result = await userManager.CreateAsync(user, model.Password);
+            if (await roleManager.RoleExistsAsync(UserRoles.User))
+            { 
+                await userManager.AddToRoleAsync(user,UserRoles.User);
+            }
+
             if (!result.Succeeded)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
 
@@ -125,6 +130,8 @@ namespace Khdoum.Api.Controllers
                 await roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));
             if (!await roleManager.RoleExistsAsync(UserRoles.User))
                 await roleManager.CreateAsync(new IdentityRole(UserRoles.User));
+            if (!await roleManager.RoleExistsAsync(UserRoles.Market))
+                await roleManager.CreateAsync(new IdentityRole(UserRoles.Market));
 
             if (await roleManager.RoleExistsAsync(UserRoles.Admin))
             {

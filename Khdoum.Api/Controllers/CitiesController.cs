@@ -53,17 +53,19 @@ namespace Khdoum.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<City>> CreateEmployee(City city)
+        public async Task<ActionResult<bool>> CreateCity([FromForm]City city)
         {
             try
             {
                 if (city == null)
                     return BadRequest();
 
-                var createdCity = await Cities.AddCity(city);
+                var result = await Cities.AddCity(city);
 
-                return CreatedAtAction(nameof(GetCities),
-                    new { id = createdCity.ID }, createdCity);
+                if (result)
+                    return Ok(result);
+
+                return BadRequest();
             }
             catch (Exception)
             {
@@ -72,22 +74,25 @@ namespace Khdoum.Api.Controllers
             }
         }
 
-        [HttpPut("{id:int}")]
-        public async Task<ActionResult<City>> UpdateCity(int id, City city)
+        [HttpPut]
+        public async Task<ActionResult<bool>> UpdateCity([FromForm] City city)
         {
             try
             {
-                if (id != city.ID)
-                    return BadRequest("City ID mismatch");
+                
 
-                var cityToUpdate = await Cities.GetCity(id);
+                var cityToUpdate = await Cities.GetCity(city.ID);
 
                 if (cityToUpdate == null)
-                    return NotFound($"City with Id = {id} not found");
+                    return NotFound($"City with Id = {city.ID} not found");
 
-                return await Cities.UpdateCity(city);
+                var result =  await Cities.UpdateCity(city);
+                if (result)
+                    return Ok(result);
+
+                return BadRequest();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     "Error updating data");
@@ -95,7 +100,7 @@ namespace Khdoum.Api.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        public async Task<ActionResult<City>> DeleteCity(int id)
+        public async Task<ActionResult<bool>> DeleteCity(int id)
         {
             try
             {
@@ -106,7 +111,13 @@ namespace Khdoum.Api.Controllers
                     return NotFound($"City with Id = {id} not found");
                 }
 
-                return await Cities.DeleteCity(id);
+                var result = await Cities.DeleteCity(id);
+
+                if (result)
+                    return Ok(result);
+
+                return BadRequest();
+
             }
             catch (Exception)
             {
