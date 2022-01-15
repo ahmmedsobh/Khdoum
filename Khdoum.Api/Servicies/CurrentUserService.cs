@@ -29,7 +29,10 @@ namespace Khdoum.Api.Servicies
 
             if (User != null)
             {
-                UserId = User.Id;
+                if(!User.BlockUser)
+                {
+                    UserId = User.Id;
+                }
             }
 
             if (!string.IsNullOrEmpty(UserId))

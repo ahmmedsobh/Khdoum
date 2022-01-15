@@ -30,6 +30,7 @@ namespace Khdoum.Api.Data
         public DbSet<Coupon> Coupons { get; set; }
         public DbSet<UserCoupon> UserCoupons { get; set; }
         public DbSet<ProductOffer> ProductOffers { get; set; }
+        public DbSet<Setting> Settings { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

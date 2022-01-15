@@ -19,11 +19,13 @@ namespace Khdoum.Api.Controllers
     {
         private readonly IOrderService Orders;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly ICurrentUserService currentUser;
 
-        public OrdersController(IOrderService Orders, UserManager<ApplicationUser> userManager)
+        public OrdersController(IOrderService Orders, UserManager<ApplicationUser> userManager,ICurrentUserService currentUser)
         {
             this.Orders = Orders;
             this.userManager = userManager;
+            this.currentUser = currentUser;
         }
 
         [HttpGet]
@@ -98,22 +100,12 @@ namespace Khdoum.Api.Controllers
         {
             try
             {
-                var UserName = HttpContext.User.Claims.Where(a => a.Type == ClaimTypes.Name).FirstOrDefault()?.Value;
-              
-                var User = await userManager.FindByNameAsync(UserName);
-                var UserId = "";
                 
-                if(User != null)
-                {
-                    UserId = User.Id;
-                }
+                var UserId = await currentUser.GetUserId(HttpContext);
 
-                if (UserId == null || UserId == "")
-                {
+                if (string.IsNullOrEmpty(UserId))
                     return BadRequest();
-                }
 
-                
                 //Order.Order.UserId = "e7ef2099-baa3-4137-bbef-cd1666face01";
                 Order.Order.UserId = UserId;
                 var result = await Orders.AddOrder(Order);

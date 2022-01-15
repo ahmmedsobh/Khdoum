@@ -17,6 +17,7 @@ namespace Khdoum.Api.Models
         public bool IsClientVerified { get; set; }
         public int? StateId { get; set; }
         public State State { get; set; }
+        public bool BlockUser { get; set; }
         public List<MarketProducts> MarketProducts { get; set; }
         [JsonIgnore]
         public List<Order> Orders { get; set; }
