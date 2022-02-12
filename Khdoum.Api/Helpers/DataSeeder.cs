@@ -10,10 +10,12 @@ namespace Khdoum.Api.Helpers
 {
     public static class DataSeeder
     {
-        public static void SeedData(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        public async static Task<IdentityResult> SeedData(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             //SeedUsers(userManager);
-            SeedRoles(roleManager);
+            await SeedRoles(roleManager);
+
+            return IdentityResult.Success;
         }
 
         public static void SeedUsers(UserManager<ApplicationUser> userManager)
@@ -45,28 +47,34 @@ namespace Khdoum.Api.Helpers
 
         }
 
-        public async static void SeedRoles(RoleManager<IdentityRole> roleManager)
+        public async static Task<IdentityResult> SeedRoles(RoleManager<IdentityRole> roleManager)
         {
             try
             {
                 //context.Database.EnsureCreated();//if db is not exist ,it will create database .but ,do nothing .
+                var AdminRole =  !await roleManager.RoleExistsAsync(UserRoles.Admin);
+                var UserRole =  !await roleManager.RoleExistsAsync(UserRoles.User);
+                var MarketRole =  !await roleManager.RoleExistsAsync(UserRoles.Market);
+                var DelegateRole =  !await roleManager.RoleExistsAsync(UserRoles.Delegate);
 
-                if (!await roleManager.RoleExistsAsync(UserRoles.Admin))
+                if (AdminRole)
                     await roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));
-                if (!await roleManager.RoleExistsAsync(UserRoles.User))
+                if (UserRole)
                     await roleManager.CreateAsync(new IdentityRole(UserRoles.User));
-                if (!await roleManager.RoleExistsAsync(UserRoles.Market))
+                if (MarketRole)
                     await roleManager.CreateAsync(new IdentityRole(UserRoles.Market));
-                if (!await roleManager.RoleExistsAsync(UserRoles.Delegate))
+                if (DelegateRole)
                     await roleManager.CreateAsync(new IdentityRole(UserRoles.Delegate));
 
+                return IdentityResult.Success;
+
             }
-            catch
+            catch(Exception ex)
             {
 
             }
 
-
+            return IdentityResult.Success;
 
         }
     }

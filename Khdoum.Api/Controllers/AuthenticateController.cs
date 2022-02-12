@@ -120,18 +120,15 @@ namespace Khdoum.Api.Controllers
             {
                 Email = "ahmed@gmail.com",
                 SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = model.Username
+                UserName = model.Username,
+                Name = model.Name,
+                VisiblePassword = model.Password
             };
             var result = await userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
                 return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
 
-            if (!await roleManager.RoleExistsAsync(UserRoles.Admin))
-                await roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));
-            if (!await roleManager.RoleExistsAsync(UserRoles.User))
-                await roleManager.CreateAsync(new IdentityRole(UserRoles.User));
-            if (!await roleManager.RoleExistsAsync(UserRoles.Market))
-                await roleManager.CreateAsync(new IdentityRole(UserRoles.Market));
+            
 
             if (await roleManager.RoleExistsAsync(UserRoles.Admin))
             {
@@ -139,6 +136,36 @@ namespace Khdoum.Api.Controllers
             }
 
             return Ok(new Response { Status = "Success", Message = "User created successfully!" });
+        }
+
+        [HttpPost]
+        [Route("RegisterDelegate")]
+        public async Task<IActionResult> RegisterDelegate([FromBody] RegisterViewModel model)
+        {
+            var userExists = await userManager.FindByNameAsync(model.Username);
+            if (userExists != null)
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists!" });
+
+            ApplicationUser user = new ApplicationUser()
+            {
+                Email = "ahmed@gmail.com",
+                SecurityStamp = Guid.NewGuid().ToString(),
+                UserName = model.Username,
+                Name = model.Name,
+                VisiblePassword = model.Password
+            };
+
+            var result = await userManager.CreateAsync(user, model.Password);
+            if (!result.Succeeded)
+                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+
+
+            if (await roleManager.RoleExistsAsync(UserRoles.Delegate))
+            {
+                await userManager.AddToRoleAsync(user, UserRoles.Delegate);
+            }
+
+            return Ok(new Response { Status = "Success", Message = "Delegate created successfully!" });
         }
     }
 }

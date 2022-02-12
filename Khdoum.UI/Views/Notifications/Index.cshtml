@@ -1,0 +1,217 @@
+﻿@model Khdoum.UI.Models.Notification
+@{
+    Layout = "DashboardLayout";
+}
+
+<h1>قائمة الاشعارات</h1>
+<p>
+    <a class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#AddModal">اضافة جديد</a>
+</p>
+
+<table class="table table-striped table-bordered text-center" id="table">
+    <thead>
+        <tr>
+            <th>
+                العنوان
+            </th>
+            <th>
+                الوصف
+            </th>
+            <th>
+                الوقت
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<!-- Modal -->
+<div class="modal fade" id="AddModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form id="AddForm" method="post">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">اضافة</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="form-group">
+                                <label asp-for="Title" class="control-label">العنوان</label>
+                                <input asp-for="Title" class="form-control Title" />
+                                <span asp-validation-for="Title" class="text-danger "></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Description" class="control-label">الرسالة</label>
+                                <input asp-for="Description" class="form-control Description" />
+                                <span asp-validation-for="Description" class="text-danger "></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">نوع المستخدمين</label>
+                                <select class="form-control UserType">
+                                    <option value="">اختر</option>
+                                    <option value="User">عميل</option>
+                                    <option value="Delegate">مندوب</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Users" class="control-label">نوع المستخدمين</label>
+                                <select asp-for="Users" class="form-control Users">
+                                </select>
+                                <span asp-validation-for="Users" class="text-danger "></span>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">اغلاق</button>
+                    <button type="submit" id="AddBtn" class="btn btn-primary">اضافة</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+
+
+
+@section Scripts
+{
+    <script>
+        $(function () {
+
+
+            FillTable();
+
+            $("#AddForm").submit(function (e) {
+                e.preventDefault();
+                Insert();
+            });
+
+        });
+
+        function Insert() {
+
+            //if (!Validation('#add_modal')) {
+            //    e.preventDefault();
+            //    return;
+            //}
+
+            //Create FormData object
+            var fileData = new FormData();
+
+            var SerializedData = $("#AddForm").serializeArray();
+
+
+
+
+
+            $.each(SerializedData, function (index, item) {
+                fileData.append(item.name, item.value);
+            });
+
+
+            $.ajax({
+                type: 'POST',
+                url: `@Url.Action("Create", "Notifications")`,
+                processData: false,
+                contentType: false,
+                data: fileData ,
+                //beforeSend: function () {
+
+                //},
+
+            success: function (data) {
+
+                if (data.status == true) {
+                    EmptyFeilds();
+                    $('#AddModal').modal('hide');
+                    FillTable();
+                }
+
+                //if (data.Message.Title != null && data.Message.Title != "" ) {
+                //    var title = data.Message.Title;
+                //    var body = data.Message.Description;
+                //    var type = data.Message.Type;
+                //    ShowMessage(title, body, type);
+                //}
+                },
+                error: function (ex) {
+
+                    console.log(ex);
+                    console.log(response);
+
+                    var r = jQuery.parseJSON(response.responseText);
+                    alert("Message: " + r.Message);
+                    alert("StackTrace: " + r.StackTrace);
+                    alert("ExceptionType: " + r.ExceptionType);
+                }
+            });
+
+        }
+
+        function FillTable() {
+            var Url = "@Url.Action("GetList", "Notifications")";
+            var Columns = [
+
+                { data: 'title', 'title': 'title' },
+                { data: 'description', 'description': 'description' },
+                { data: 'dateAndTime', 'dateAndTime': 'dateAndTime' },
+            ];
+            BuildAjaxDataTable($("#table"), Url, Columns, [],"notifications",false);
+        }
+
+
+        $(document).on("change", ".UserType", function () {
+            var UserType = $(this).val();
+            $(".Users options").remove();
+
+            $.ajax({
+                type: 'POST',
+                url: `@Url.Action("GetUsersListAjax", "Notifications")`,
+                processData: false,
+                contentType: false,
+                data: {
+                    Type: UserType
+
+                },
+                //beforeSend: function () {
+
+                //},
+
+                success: function (data) {
+
+                    var options = ``;
+
+                    if (data.users.length > 0) {
+                        $.each(data.users, function (index, item) {
+                            options += `<option value="${item.id}">${item.name}</option>`;
+                        });
+
+                        $(".Users").append(options);
+                    }
+                
+                },
+                error: function (ex) {
+
+                    console.log(ex);
+                    console.log(response);
+
+                    var r = jQuery.parseJSON(response.responseText);
+                    alert("Message: " + r.Message);
+                    alert("StackTrace: " + r.StackTrace);
+                    alert("ExceptionType: " + r.ExceptionType);
+                }
+            });
+
+        });
+
+    </script>
+}

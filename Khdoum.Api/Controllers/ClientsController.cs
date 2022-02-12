@@ -40,5 +40,36 @@ namespace Khdoum.Api.Controllers
 
             return BadRequest();
         }
+
+
+        [HttpGet]
+        [Route("GetClients")]
+        public async Task<ActionResult> GetClients()
+        {
+            try
+            {
+                var clients = await ClientServise.GetClients();
+                return Ok(clients);
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error retrieving data from the database");
+            }
+           
+        }
+
+
+        [HttpPost]
+        [Route("ChangeBlockState")]
+        public async Task<ActionResult> ChangeBlockState([FromForm] string ClientId)
+        {
+            var Result = await ClientServise.ChangeBlockState(ClientId);
+
+            if (Result)
+                return Ok();
+
+            return BadRequest();
+        }
     }
 }

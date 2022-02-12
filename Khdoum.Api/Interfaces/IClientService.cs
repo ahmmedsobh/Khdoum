@@ -11,5 +11,7 @@ namespace Khdoum.Api.Interfaces
     {
         Task<string> ChangeClientImg(IFormFile ImgFile,string ClientId);
         Task<bool> VerifyClient(string ClientId);
+        Task<IEnumerable<ClientViewModel>> GetClients();
+        Task<bool> ChangeBlockState(string UserId);
     }
 }

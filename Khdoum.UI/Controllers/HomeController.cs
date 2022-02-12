@@ -262,6 +262,35 @@ namespace Khdoum.UI.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public async Task<IActionResult> UpdateOrder()
+        {
+            var Client = new HttpClient();
+
+            var order = new Order
+            {
+                ID = 22,
+                Status = 2
+            };
+
+            var accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiMDEwOTc4OTg5NjUiLCJqdGkiOiI3N2QwNzNmMS0yYjZiLTRmMTQtYjY4Zi1hNTFlN2RjMTIzZTUiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJEZWxlZ2F0ZSIsImV4cCI6MTY3NDgwNzUyOCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo2MTk1NSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NDIwMCJ9.YDyc68ZceAO92Gf1zC0--F4E2YB0-JW-peMS49Cwr_c";
+
+            Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+                "Bearer", accessToken);
+
+            var json = JsonConvert.SerializeObject(order);
+            HttpContent content = new StringContent(json);
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            var response = await Client.PutAsync(Constant.BaseAddress + "api/Orders", content);
+            if (response.IsSuccessStatusCode)
+            {
+                //return await Task.FromResult(true);
+            }
+
+            //return await Task.FromResult(false);
+            return View();
+        }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

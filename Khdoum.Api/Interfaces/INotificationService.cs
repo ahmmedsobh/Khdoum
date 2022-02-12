@@ -10,5 +10,7 @@ namespace Khdoum.Api.Interfaces
     {
         Task<bool> SaveFirebaseAppToken(string Token, string UserId);
         Task<IEnumerable<Notification>> GetNotificationsForUser(string UserId);
+        Task<IEnumerable<Notification>> GetNotificationsForDashboardUser(string UserId);
+        Task<bool> SendNotification(Notification notification);
     }
 }

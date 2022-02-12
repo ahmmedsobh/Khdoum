@@ -1,4 +1,5 @@
 ﻿using Khdoum.Api.Interfaces;
+using Khdoum.Api.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -30,6 +31,15 @@ namespace Khdoum.Api.Controllers
             return Ok(UserNotifications);
         }
 
+        [HttpGet("GetNotificationsForDashboardUser")]
+        public async Task<ActionResult> GetNotificationsForDashboardUser()
+        {
+            string UserId = await CurrentUserService.GetUserId(HttpContext);
+            var UserNotifications = await NotificationService.GetNotificationsForDashboardUser(UserId);
+
+            return Ok(UserNotifications);
+        }
+
         [HttpGet("SaveFirebaseAppToken/{Token}")]
         public async Task<ActionResult> SaveFirebaseAppToken(string Token)
         {
@@ -42,6 +52,29 @@ namespace Khdoum.Api.Controllers
             return BadRequest();
 
 
+        }
+
+        [HttpPost]
+        [Route("SendNotification")]
+        public async Task<ActionResult<bool>> SendNotification([FromForm] Notification notification)
+        {
+            try
+            {
+                if (notification == null)
+                    return BadRequest();
+
+                var result = await NotificationService.SendNotification(notification);
+
+                if (result)
+                    return Ok(result);
+
+                return BadRequest();
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error creating new city record");
+            }
         }
     }
 }

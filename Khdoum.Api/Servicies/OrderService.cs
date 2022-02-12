@@ -14,10 +14,12 @@ namespace Khdoum.Api.Servicies
     public class OrderService : IOrderService
     {
         private readonly ApplicationDbContext context;
+        private readonly INotificationService notificationService;
 
-        public OrderService(ApplicationDbContext context)
+        public OrderService(ApplicationDbContext context ,INotificationService notificationService)
         {
             this.context = context;
+            this.notificationService = notificationService;
         }
 
         public async Task<bool> AddOrder(OrderViewModel Order)
@@ -32,6 +34,9 @@ namespace Khdoum.Api.Servicies
                 }
             }
 
+            TimeZoneInfo newTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Egypt Standard Time");
+            DateTimeOffset date = TimeZoneInfo.ConvertTime(Order.Order.Date, newTimeZone);
+            Order.Order.Date = date.Date;
             await context.Orders.AddAsync(Order.Order);
             var result = await context.SaveChangesAsync();
 
@@ -83,22 +88,22 @@ namespace Khdoum.Api.Servicies
         {
             OrderViewModel order = new OrderViewModel();
             order.Order = await context.Orders.FirstOrDefaultAsync(o => o.ID == OrderId);
+            //order.OrderDetails = await (from od in context.OrderDetails
+            //                            from o in context.Orders
+            //                            from p in context.Products
+            //                            from m in context.Users
+            //                            from mp in context.MarketProducts
+            //                            where o.ID == od.OrderId
+            //                            && p.ID == od.ProductId
+            //                            && p.ID == mp.ProductId
+            //                            && m.Id == mp.UserId
+            //                            && od.OrderId == OrderId
             order.OrderDetails = await (from od in context.OrderDetails
-                                        from o in context.Orders
-                                        from p in context.Products
-                                        from m in context.Users
-                                        from mp in context.MarketProducts
-                                        where o.ID == od.OrderId
-                                        && p.ID == od.ProductId
-                                        && p.ID == mp.ProductId
-                                        && m.Id == mp.UserId
-                                        && od.OrderId == OrderId
-                                        //order.OrderDetails = await (from od in context.OrderDetails
-                                        //                            join o in context.Orders on od.OrderId equals o.ID
-                                        //                            join p in context.Products on od.ProductId equals p.ID
-                                        //                            join mp in context.MarketProducts on p.ID equals mp.ProductId
-                                        //                            join m in context.Users on mp.UserId equals m.Id
-                                        //                            where od.OrderId == OrderId
+                                        join o in context.Orders on od.OrderId equals o.ID
+                                        join p in context.Products on od.ProductId equals p.ID
+                                        join mp in context.MarketProducts on p.ID equals mp.ProductId
+                                        join m in context.Users on mp.UserId equals m.Id
+                                        where od.OrderId == OrderId
 
                                         select new OrderDetailsViewModel
                                         {
@@ -121,7 +126,7 @@ namespace Khdoum.Api.Servicies
 
         public async Task<IEnumerable<Order>> GetOrdersWithoutDetails()
         {
-            return await context.Orders.ToListAsync();
+            return await context.Orders.Where(o=>o.Status == 1).ToListAsync();
         }
 
         public async Task<IEnumerable<Order>> GetOrdersByStatusWithoutDetailsForUser(string UserId,int Status)
@@ -144,13 +149,51 @@ namespace Khdoum.Api.Servicies
             if(OrderToUpdate != null)
             {
                 OrderToUpdate.Status = Order.Status;
+                OrderToUpdate.DeliveryId = Order.DeliveryId;
+
                 context.Orders.Update(OrderToUpdate);
                 await context.SaveChangesAsync();
+
+
+                //send notification
+                var content = "";
+                if (OrderToUpdate.Status ==2)
+                    content = "يتم تجهيز الطلب";
+                else if(OrderToUpdate.Status == 3)
+                    content = "تم تسليم الطلب";
+
+
+                var notification = new Notification()
+                {
+                    Title = $"الطلب رقم {OrderToUpdate.ID}",
+                    Description = content,
+                    DateAndTime = DateTime.Now,
+                    Notifications = new List<UserNotifications>()
+                    {
+                        new UserNotifications(){ UserId = OrderToUpdate.UserId}
+                    }
+                };
+
+                try
+                {
+                    await notificationService.SendNotification(notification);
+                }
+                catch(Exception ex)
+                {
+
+                }
+
                 return await Task.FromResult(true);
             }
 
             return await Task.FromResult(false);
 
+        }
+
+        public async Task<IEnumerable<Order>> GetOrdersByStatusWithoutDetailsForDelegate(string DelegateId, int Status)
+        {
+            var orders = await context.Orders.Where(o => o.DeliveryId == DelegateId && (Status==0?true:o.Status == Status)).ToListAsync();
+            return orders;
         }
     }
 }

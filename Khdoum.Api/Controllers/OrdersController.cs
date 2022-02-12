@@ -75,6 +75,38 @@ namespace Khdoum.Api.Controllers
         }
 
         [Authorize]
+        [HttpGet("GetOrdersByStatusWithoutDetailsForDelegate/{Status}")]
+        public async Task<ActionResult> GetOrdersByStatusWithoutDetailsForDelegate(int Status = 0)
+        {
+            try
+            {
+                var UserName = HttpContext.User.Claims.Where(a => a.Type == ClaimTypes.Name).FirstOrDefault()?.Value;
+
+                var User = await userManager.FindByNameAsync(UserName);
+                var UserId = "";
+
+                if (User != null)
+                {
+                    UserId = User.Id;
+                }
+
+                if (UserId == null || UserId == "")
+                {
+                    return BadRequest();
+                }
+
+                var orders = await Orders.GetOrdersByStatusWithoutDetailsForDelegate(UserId, Status);
+
+                return Ok(orders);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    "Error retrieving data from the database");
+            }
+        }
+
+        [Authorize]
         [HttpGet("{id:long}")]
         public async Task<ActionResult<OrderViewModel>> GetOrder(long id)
         {
@@ -125,12 +157,20 @@ namespace Khdoum.Api.Controllers
             }
         }
 
+        [Authorize]
         [HttpPut]
         public async Task<ActionResult> UpdateOrder(Order order)
         {
             try
             {
+                string UserId = await currentUser.GetUserId(HttpContext);
 
+                if(string.IsNullOrEmpty(UserId))
+                {
+                    return BadRequest();
+                }
+
+                order.DeliveryId = UserId;
 
                 var orderToUpdate = await Orders.GetOrder(order.ID);
 
@@ -181,5 +221,13 @@ namespace Khdoum.Api.Controllers
                     "Error deleting data");
             }
         }
+
+        //[HttpGet]
+        //[Route("TestDelegateOrders")]
+        //public async Task<ActionResult> TestDelegateOrders()
+        //{
+        //    var o = await Orders.GetOrdersByStatusWithoutDetailsForDelegate("f10b0586-169e-472c-8a57-2c2c04455192",1);
+        //    return Ok(o);
+        //}
     }
 }

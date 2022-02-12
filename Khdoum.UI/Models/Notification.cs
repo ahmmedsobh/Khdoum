@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Khdoum.Api.Models
+namespace Khdoum.UI.Models
 {
     public class Notification
     {
@@ -11,8 +11,8 @@ namespace Khdoum.Api.Models
         public string Title { get; set; }
         public string Description { get; set; }
         public DateTime DateAndTime { get; set; }
-        public string DashboardNotificationsSenderUser { get; set; }
 
-        public virtual ICollection<UserNotifications> Notifications { get; set; } 
+
+        public string[] Users { get; set; }
     }
 }

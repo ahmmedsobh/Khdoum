@@ -6,6 +6,7 @@ using Khdoum.Api.Servicies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -87,18 +88,20 @@ namespace Khdoum.Api
             services.AddScoped<IGeneralDelivery, GeneralDeliveryService>();
             services.AddScoped<IClientService, ClientService>();
             services.AddScoped<ISettingService, SettingService>();
+            services.AddScoped<IUserService, UsersService>();
 
             services.AddScoped<UploadImages>();
+
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        public  void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-
 
             app.UseStaticFiles();
             app.UseRouting();
@@ -111,8 +114,7 @@ namespace Khdoum.Api
                 endpoints.MapControllers();
             });
 
-            DataSeeder.SeedData(userManager, roleManager);
-
+            DataSeeder.SeedData(userManager, roleManager).Wait();
         }
     }
 }

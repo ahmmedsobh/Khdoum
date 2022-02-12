@@ -1,8 +1,10 @@
 ﻿using Khdoum.Api.Data;
 using Khdoum.Api.Helpers;
 using Khdoum.Api.Interfaces;
+using Khdoum.Api.Models;
 using Khdoum.Api.Models.ViewModels;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -15,13 +17,34 @@ namespace Khdoum.Api.Servicies
     {
         private readonly ApplicationDbContext context;
         private readonly UploadImages uploadImages;
+        private readonly RoleManager<IdentityRole> roleManager;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        public ClientService(ApplicationDbContext context, UploadImages uploadImages)
+        public ClientService(ApplicationDbContext context, 
+                             UploadImages uploadImages,
+                             RoleManager<IdentityRole> roleManager,
+                             UserManager<ApplicationUser> userManager)
         {
             this.context = context;
             this.uploadImages = uploadImages;
+            this.roleManager = roleManager;
+            this.userManager = userManager;
             this.uploadImages.Folder = "Users";
         }
+
+        public async Task<bool> ChangeBlockState(string UserId)
+        {
+            var User = await context.Users.FirstOrDefaultAsync(u=>u.Id == UserId);
+            if (User == null)
+                return false;
+
+            User.BlockUser = !User.BlockUser;
+            context.Users.Update(User);
+            await context.SaveChangesAsync();
+
+            return true;
+        }
+
         public async Task<string> ChangeClientImg(IFormFile ImgFile,string ClientId)
         {
             if (ImgFile == null)
@@ -42,6 +65,24 @@ namespace Khdoum.Api.Servicies
 
             return ImgUrl;
         }
+
+        public async Task<IEnumerable<ClientViewModel>> GetClients()
+        {
+            var Clients = (await userManager.GetUsersInRoleAsync(UserRoles.User));
+            var ClientsToDisplay = from c in Clients
+                                   select new ClientViewModel()
+                                   {
+                                       Id = c.Id,
+                                       Name = c.Name,
+                                       ImgUrl = c.ImgUrl == "false" ? $"{Constants.BaseAddress}Uploads/default.png" : $"{Constants.BaseAddress}Uploads/Users/{c.ImgUrl}",
+                                       IsClientVerified = c.IsClientVerified,
+                                       IsBlocked = c.BlockUser,
+                                       OrdersCount = c.Orders.Count
+                                   };
+
+            return ClientsToDisplay;
+        }
+
 
         public async Task<bool> VerifyClient(string ClientId)
         {

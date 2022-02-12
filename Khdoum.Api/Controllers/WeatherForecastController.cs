@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Khdoum.Api.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
@@ -36,6 +36,16 @@ namespace Khdoum.Api.Controllers
                 Summary = Summaries[rng.Next(Summaries.Length)]
             })
             .ToArray();
+        }
+
+        [HttpGet]
+        [Route("GetDate")]
+        public IActionResult GetDate()
+        {
+            var TimeZone = TimeZoneInfo.FindSystemTimeZoneById("Egypt Standard Time");
+            DateTime now = TimeZoneInfo.ConvertTime(DateTime.UtcNow, TimeZone);
+            DateTime date = Convert.ToDateTime(now.ToString("MM/dd/yyyy HH:mm tt"));
+            return Ok(now.ToString("MM/dd/yyyy hh:mm tt"));
         }
     }
 }
