@@ -32,5 +32,12 @@ namespace Khdoum.Api.Controllers
                     "Error retrieving data from the database");
             }
         }
+
+        [HttpGet("ChangeBlockState/{UserId}")]
+        public async Task<ActionResult> ChangeBlockState(string UserId)
+        {
+            var Result = await userService.ChangeBlockState(UserId);
+            return Ok(Result);
+        }
     }
 }

@@ -33,7 +33,7 @@ namespace Khdoum.Api.Controllers
 
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> Login( LoginViewModel model)
+        public async Task<IActionResult> Login(LoginViewModel model)
         {
             try
             {

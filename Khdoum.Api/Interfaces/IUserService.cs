@@ -8,6 +8,7 @@ namespace Khdoum.Api.Interfaces
 {
     public interface IUserService
     {
-        Task<IEnumerable<User>> UsersByType(string Type);
+        Task<IEnumerable<UserViewModel>> UsersByType(string Type);
+        Task<bool> ChangeBlockState(string UserId);
     }
 }

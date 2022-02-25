@@ -1,5 +1,7 @@
 ﻿using Khdoum.Api.Interfaces;
 using Khdoum.Api.Models;
+using Khdoum.Api.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -55,15 +57,28 @@ namespace Khdoum.Api.Controllers
         }
 
         [HttpPost]
-        [Route("SendNotification")]
-        public async Task<ActionResult<bool>> SendNotification([FromForm] Notification notification)
+        [Authorize]
+        //[Route("SendNotification")]
+        public async Task<ActionResult<bool>> SendNotification([FromForm] NotificationViewModel notification)
         {
             try
             {
                 if (notification == null)
                     return BadRequest();
 
-                var result = await NotificationService.SendNotification(notification);
+                string UserId = await CurrentUserService.GetUserId(HttpContext);
+                notification.SenderUser = UserId;
+
+                var NotificationToAdd = new Notification()
+                {
+                    Title = notification.Title,
+                    Description = notification.Description,
+                    DateAndTime = DateTime.Now,
+                    SenderUser = notification.SenderUser,
+                    Notifications = notification.Notifications
+                };
+
+                var result = await NotificationService.SendNotification(NotificationToAdd);
 
                 if (result)
                     return Ok(result);

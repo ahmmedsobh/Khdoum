@@ -25,7 +25,7 @@ namespace Khdoum.Api.Servicies
         public async Task<IEnumerable<n.Notification>> GetNotificationsForDashboardUser(string UserId)
         {
             var UserNotifications = (from n in context.Notifications
-                                     where n.DashboardNotificationsSenderUser == UserId
+                                     where n.SenderUser == UserId
                                      select n).ToListAsync();
 
             return await UserNotifications;
@@ -139,7 +139,8 @@ namespace Khdoum.Api.Servicies
                 Title = notification.Title,
                 Description = notification.Description,
                 DateAndTime = DateTime.Now,
-                Notifications = UsersNotifications.ToList()
+                Notifications = UsersNotifications.ToList(),
+                SenderUser = notification.SenderUser
             };
 
             await context.Notifications.AddAsync(notificationToAdd);

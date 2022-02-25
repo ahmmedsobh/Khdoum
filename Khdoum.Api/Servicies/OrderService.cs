@@ -168,6 +168,7 @@ namespace Khdoum.Api.Servicies
                     Title = $"الطلب رقم {OrderToUpdate.ID}",
                     Description = content,
                     DateAndTime = DateTime.Now,
+                    SenderUser = OrderToUpdate.DeliveryId,
                     Notifications = new List<UserNotifications>()
                     {
                         new UserNotifications(){ UserId = OrderToUpdate.UserId}
