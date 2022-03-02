@@ -90,7 +90,7 @@ namespace Khdoum.Api.Servicies
                                  {
                                      ProductId = p.ID,
                                      UserId = p.MarketId,
-                                     Price = Convert.ToDecimal(p.Price),
+                                     Price = Math.Round( Convert.ToDecimal(p.Price),3),
                                  };
 
 

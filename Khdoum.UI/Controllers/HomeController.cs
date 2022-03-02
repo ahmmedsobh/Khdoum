@@ -40,10 +40,10 @@ namespace Khdoum.UI.Controllers
         {
             var client = new HttpClient();
 
-            var Phone = "01097613603";
+            var Phone = "010976136077";
             var Password = "AAaa123456789##";
-
-            var json = JsonConvert.SerializeObject(new { UserName = Phone, Password = Password });
+            var Name = "ahmed";
+            var json = JsonConvert.SerializeObject(new { UserName = Phone, Password = Password,Name=Name });
 
             HttpContent httpContent = new StringContent(json);
 

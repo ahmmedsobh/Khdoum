@@ -13,5 +13,6 @@ namespace Khdoum.Api.Models.ViewModels
         public string ImgUrl { get; set; }
         public bool IsClientVerified { get; set; }
         public bool BlockUser { get; set; }
+        public string Password { get; set; }
     }
 }
