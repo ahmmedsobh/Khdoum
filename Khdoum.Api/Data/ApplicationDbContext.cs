@@ -132,6 +132,8 @@ namespace Khdoum.Api.Data
                         .HasMany(m => m.ProductOffers)
                         .WithOne(o => o.MarketProducts);
 
+            modelBuilder.Entity<Product>().Property(e => e.QuantityDuration).HasPrecision(18, 3);
+
 
             base.OnModelCreating(modelBuilder);
         }

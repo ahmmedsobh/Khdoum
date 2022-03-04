@@ -47,7 +47,7 @@ namespace Khdoum.Api.Servicies
                 ImgUrl = (u.ImgUrl == "false" || u.ImgUrl == null) ? $"{Constants.BaseAddress}Uploads/default.png" : $"{Constants.BaseAddress}Uploads/Users/{u.ImgUrl}",
                 IsClientVerified = u.IsClientVerified,
                 BlockUser = u.BlockUser,
-                Phone = u.PhoneNumber,
+                Phone = u.UserName,
                 Password = u.VisiblePassword
             });
 
