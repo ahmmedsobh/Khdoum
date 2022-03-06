@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Khdoum.Api.Models;
+using Khdoum.Api.Helpers;
 
 namespace Khdoum.Api.Servicies
 {
@@ -138,7 +139,7 @@ namespace Khdoum.Api.Servicies
             {
                 Title = notification.Title,
                 Description = notification.Description,
-                DateAndTime = DateTime.Now,
+                DateAndTime = DateTimeHelper.GetDate(),
                 Notifications = UsersNotifications.ToList(),
                 SenderUser = notification.SenderUser
             };

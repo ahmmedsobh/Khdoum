@@ -3,6 +3,7 @@ using Khdoum.Api.Helpers;
 using Khdoum.Api.Interfaces;
 using Khdoum.Api.Models;
 using Khdoum.Api.Models.ViewModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -15,11 +16,13 @@ namespace Khdoum.Api.Servicies
     {
         private readonly ApplicationDbContext context;
         private readonly INotificationService notificationService;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        public OrderService(ApplicationDbContext context ,INotificationService notificationService)
+        public OrderService(ApplicationDbContext context ,INotificationService notificationService,UserManager<ApplicationUser> userManager)
         {
             this.context = context;
             this.notificationService = notificationService;
+            this.userManager = userManager;
         }
 
         public async Task<bool> AddOrder(OrderViewModel Order)
@@ -34,9 +37,8 @@ namespace Khdoum.Api.Servicies
                 }
             }
 
-            TimeZoneInfo newTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Egypt Standard Time");
-            DateTimeOffset date = TimeZoneInfo.ConvertTime(Order.Order.Date, newTimeZone);
-            Order.Order.Date = date.Date;
+           
+            Order.Order.Date = DateTimeHelper.GetDate();
             await context.Orders.AddAsync(Order.Order);
             var result = await context.SaveChangesAsync();
 
@@ -60,6 +62,37 @@ namespace Khdoum.Api.Servicies
                 }
 
                 await context.SaveChangesAsync();
+
+
+                //Send notifications to delegates
+                var delegates = await userManager.GetUsersInRoleAsync(UserRoles.Delegate);
+                var ActiveDelegates = delegates.Where(d => !d.BlockUser).ToList();
+
+                var userNotifications = ActiveDelegates.Select( d=> new UserNotifications()
+                {
+                    UserId = d.Id
+                }).ToList();
+
+
+                var notification = new Notification()
+                {
+                    Title = $"الطلب رقم {Order.Order.ID}",
+                    Description = "طلب جديد فى انتظار الموافقة",
+                    DateAndTime = DateTimeHelper.GetDate(),
+                    SenderUser = Order.Order.UserId,
+                    Notifications = userNotifications
+                };
+
+                try
+                {
+                    await notificationService.SendNotification(notification);
+                }
+                catch (Exception ex)
+                {
+
+                }
+
+
                 return await Task.FromResult(true);
             }
 
@@ -159,15 +192,15 @@ namespace Khdoum.Api.Servicies
                 var content = "";
                 if (OrderToUpdate.Status ==2)
                     content = "يتم تجهيز الطلب";
-                else if(OrderToUpdate.Status == 3)
-                    content = "تم تسليم الطلب";
+                else if(OrderToUpdate.Status == 4)
+                    content = "جاري تسليم الطلب";
 
 
                 var notification = new Notification()
                 {
                     Title = $"الطلب رقم {OrderToUpdate.ID}",
                     Description = content,
-                    DateAndTime = DateTime.Now,
+                    DateAndTime = DateTimeHelper.GetDate(),
                     SenderUser = OrderToUpdate.DeliveryId,
                     Notifications = new List<UserNotifications>()
                     {

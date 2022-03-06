@@ -114,8 +114,7 @@ namespace Khdoum.UI.Controllers
                 {
                     return Json(new
                     {
-                        //Status = true
-                        res = response
+                        Status = true
                     });
                 }
             }

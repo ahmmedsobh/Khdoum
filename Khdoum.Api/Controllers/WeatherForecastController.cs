@@ -42,9 +42,11 @@ namespace Khdoum.Api.Controllers
         [Route("GetDate")]
         public IActionResult GetDate()
         {
+            var date = DateTime.Now.AddHours(3);
+            //DateTime date12 = Convert.ToDateTime(date.ToString("MM/dd/yyyy hh:mm tt"));
             var TimeZone = TimeZoneInfo.FindSystemTimeZoneById("Egypt Standard Time");
-            DateTime now = TimeZoneInfo.ConvertTime(DateTime.UtcNow, TimeZone);
-            DateTime date = Convert.ToDateTime(now.ToString("MM/dd/yyyy HH:mm tt"));
+            var UtcTime = DateTime.SpecifyKind(date, DateTimeKind.Utc);
+            DateTime now = TimeZoneInfo.ConvertTime(UtcTime, TimeZone);
             return Ok(now.ToString("MM/dd/yyyy hh:mm tt"));
         }
     }
